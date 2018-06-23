@@ -226,38 +226,9 @@ ul.features{
 	</style>
 <script>
 
-function createCORSRequest(method, url){
-
-    var xhr = new XMLHttpRequest();
-	
-    if ("withCredentials" in xhr){
-        xhr.open(method, url, true);
-    } else if (typeof XDomainRequest != "undefined"){
-        xhr = new XDomainRequest();
-        xhr.open(method, url);
-    } else {
-        xhr = null;
-    }
-	
-    return xhr;
-}
-
-function submitForm(){
-
-	var request = createCORSRequest("get", "https://script.google.com/macros/s/AKfycbxpEpQyws46it72vZnR9ekosIWDVWu9XvmtaFfSMfw2qcPf-Mg/exec");
-	if (request){
-		request.onload = function(){		
-			//alert(request.responseText);
-			//do something with request.responseText
-		};
-		request.send();
-	}
-
-}
-
 $(document).ready(function () {
 
-history.replaceState(null,"FurniureAppOnline.com by Furniture Assistant", "FurniureAppOnline.com by Furniture Assistant");
+history.replaceState(null,"FurniureAppOnline.com by Furniture Assistant", "FurniureAppOnline.com-by-Furniture Assistant");
 
     $('#signupForm').on('submit', function(e) {
         e.preventDefault();
