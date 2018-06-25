@@ -229,33 +229,32 @@ ul.features{
 	
 
 $(document).ready(function () {
-	
-	function validatePhone(){
-		
-		if($('#phone').val().match(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/)){
-		   	$('#invalidPhone').hide();
-		e.preventDefault();
-        $.ajax({
-            url : 'https://script.google.com/macros/s/AKfycbxpEpQyws46it72vZnR9ekosIWDVWu9XvmtaFfSMfw2qcPf-Mg/exec',
-            type: "GET",
-            data: $(this).serialize(),
-            success: function (data) {
-            },
-            error: function (jXHR, textStatus, errorThrown) {
-                //alert(errorThrown);
-            }
-        });
-		window.location.href = './confirmation';
-		   }else{
-			$('#invalidPhone').show();	   
-		   }
-		
-	}
 
-    $('#signupForm').on('submit', function(e) {
-	
-	validatePhone();
-        
+    $('#submit').click(function(e) {
+
+		if($('#firstName').val() === ''){
+			$('#invalidName').show();
+		}else{
+			$('#invalidName').hide();
+			if($('#phone').val().match(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/)){
+				$('#invalidPhone').hide();	
+			$.ajax({
+				url : 'https://script.google.com/macros/s/AKfycbxpEpQyws46it72vZnR9ekosIWDVWu9XvmtaFfSMfw2qcPf-Mg/exec',
+				type: "GET",
+				data: $(this).serialize(),
+				success: function (data) {
+				},
+				error: function (jXHR, textStatus, errorThrown) {
+					//alert(errorThrown);
+				}
+			});
+			e.preventDefault();
+			window.location.href = './confirmation';			
+			}else{
+					e.preventDefault();
+				$('#invalidPhone').show();			
+			}
+		}
     });
 });
 </script>
@@ -296,7 +295,8 @@ $(document).ready(function () {
 
 							<div class="tsl-field-containers">
 								<div class="form-group col-md-12">
-									<input name="firstName" type="text" id="firstName" size="45" placeholder="First Name" class="form-control" required>
+									<input name="firstName" type="text" id="firstName" size="45" placeholder="First Name (Required)" class="form-control" required>
+									<span id="invalidName" style="display: none; color:red;">Please enter your name</span>
 								</div>
 								<div class="form-group col-md-12">
 									<input name="lastName" type="text" id="lastName" size="45" placeholder="Last Name" class="form-control">
@@ -305,8 +305,8 @@ $(document).ready(function () {
 									<input name="email" type="text" id="email" size="45" placeholder="Email" class="form-control">
 								</div>
 								<div class="form-group col-md-12">										
-										<input name="phone" type="text" size="45" id="phone" placeholder="Mobile Phone Number" class="form-control" required>
-										<span id="invalidPhone" style="display: none;">Please enter a valid phone number</span>
+										<input name="phone" type="text" size="45" id="phone" placeholder="Mobile Phone Number (Required)" class="form-control" required>
+										<span id="invalidPhone" style="display: none; color:red;">Please enter a valid phone number</span>
 								</div>
 								<div class="form-group col-md-12">										
 										<input name="needs" type="text" col="45" rows="5" id="needs" placeholder="What are your furniture needs?" class="form-control" >									
@@ -314,7 +314,7 @@ $(document).ready(function () {
 								
 							</div>
 
-							<button type="submit" onclick=""; class="btn input-block-level tui-editable btn-success" style="background-color: rgb(9, 7, 1); color: rgb(242, 232, 232); font-size: 31px; line-height: 31px; font-family: Alegreya;">APPLY HERE</button>
+							<button id="submit" type="submit" class="btn input-block-level tui-editable btn-success" style="background-color: rgb(9, 7, 1); color: rgb(242, 232, 232); font-size: 31px; line-height: 31px; font-family: Alegreya;">APPLY HERE</button>
 						</form>
 						<div class="social-container"></div>
 					</div>
