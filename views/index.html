@@ -241,7 +241,7 @@ $(document).ready(function () {
 			$.ajax({
 				url : 'https://script.google.com/macros/s/AKfycbxpEpQyws46it72vZnR9ekosIWDVWu9XvmtaFfSMfw2qcPf-Mg/exec',
 				type: "GET",
-				data: $(this).serialize(),
+				data: $($('#signupForm')).serialize(),
 				success: function (data) {
 				},
 				error: function (jXHR, textStatus, errorThrown) {
