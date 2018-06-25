@@ -225,11 +225,16 @@ ul.features{
 }
 	</style>
 <script>
+	
+	
 
 $(document).ready(function () {
-
-    $('#signupForm').on('submit', function(e) {
-        e.preventDefault();
+	
+	function validatePhone(){
+		
+		if($('#phone').val().match(){
+		   	$('#invalidPhone').hide();
+		e.preventDefault();
         $.ajax({
             url : 'https://script.google.com/macros/s/AKfycbxpEpQyws46it72vZnR9ekosIWDVWu9XvmtaFfSMfw2qcPf-Mg/exec',
             type: "GET",
@@ -241,6 +246,16 @@ $(document).ready(function () {
             }
         });
 		window.location.href = './confirmation';
+		   }else{
+			$('#invalidPhone').show();	   
+		   }
+		
+	}
+
+    $('#signupForm').on('submit', function(e) {
+	
+	validatePhone();
+        
     });
 });
 </script>
