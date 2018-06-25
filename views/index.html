@@ -232,7 +232,7 @@ $(document).ready(function () {
 	
 	function validatePhone(){
 		
-		if($('#phone').val().match(){
+		if($('#phone').val().match(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/){
 		   	$('#invalidPhone').hide();
 		e.preventDefault();
         $.ajax({
