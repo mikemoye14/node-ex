@@ -228,8 +228,6 @@ ul.features{
 
 $(document).ready(function () {
 
-//history.replaceState(null,"FurniureAppOnline.com by Furniture Assistant", "FurniureAppOnline.com-by-Furniture Assistant");
-
     $('#signupForm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
@@ -237,7 +235,6 @@ $(document).ready(function () {
             type: "GET",
             data: $(this).serialize(),
             success: function (data) {
-				 //$("#form_output").html(data);
             },
             error: function (jXHR, textStatus, errorThrown) {
                 //alert(errorThrown);
@@ -293,7 +290,8 @@ $(document).ready(function () {
 									<input name="email" type="text" id="email" size="45" placeholder="Email" class="form-control">
 								</div>
 								<div class="form-group col-md-12">										
-										<input name="phone" type="text" size="45" id="phone" placeholder="Mobile Phone Number" class="form-control" required>									
+										<input name="phone" type="text" size="45" id="phone" placeholder="Mobile Phone Number" class="form-control" required>
+										<span id="invalidPhone" style="display: none;">Please enter a valid phone number</span>
 								</div>
 								<div class="form-group col-md-12">										
 										<input name="needs" type="text" col="45" rows="5" id="needs" placeholder="What are your furniture needs?" class="form-control" >									
