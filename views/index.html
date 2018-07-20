@@ -9,13 +9,27 @@
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 	
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnjB4VvMNJHwO-os3NVef-1Xizy2uKOdo&libraries=places"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/geocomplete/1.7.0/jquery.geocomplete.min.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?&key=AIzaSyBnjB4VvMNJHwO-os3NVef-1Xizy2uKOdo&libraries=places&callback=initAutocomplete" async defer></script>
 	<script>
-		$('#pickup').geocomplete();
-		$.fn.geocomplete($('#pickup'));
+		function initAutocomplete() {
+    // Create the autocomplete object, restricting the search to geographical
+    // location types.
+    autocomplete = new google.maps.places.Autocomplete(
+        /** @type {!HTMLInputElement} */(document.getElementById('pickup')),
+        {types: ['geocode']});
+
+    // When the user selects an address from the dropdown, populate the address
+    // fields in the form.
+    autocomplete.addListener('place_changed', fillInAddress);
+  }
+
+  function fillInAddress() {
+    // Get the place details from the autocomplete object.
+    var place = autocomplete.getPlace();
+
+  }
 	</script>
-        
+	
 	<style>
 	[data-role=page]{height: 100% !important; position:relative !important;}
 	[data-role=footer]{bottom:0; position:fixed !important; top: auto !important; width:100%;}
@@ -102,17 +116,17 @@
 	</div>
 	
 	<script>
-		$(document).ready(function() {
-			$("input[type=submit]").click(function(e) {
-				var phone = $("#phone").val();
-				var pickup = $("#autocomplete").val();
-				var destination = $("#destination").val();
-				if (phone == '' || pickup == '' || destination == '') {
-					e.preventDefault();
-					alert("Please Fill Required Fields");
-				}
-			});
-		});
+		<!-- $(document).ready(function() { -->
+			<!-- $("input[type=submit]").click(function(e) { -->
+				<!-- var phone = $("#phone").val(); -->
+				<!-- var pickup = $("#autocomplete").val(); -->
+				<!-- var destination = $("#destination").val(); -->
+				<!-- if (phone == '' || pickup == '' || destination == '') { -->
+					<!-- e.preventDefault(); -->
+					<!-- alert("Please Fill Required Fields"); -->
+				<!-- } -->
+			<!-- }); -->
+		<!-- }); -->
 	</script>
 	
 	<!-- End Order Page //-->
