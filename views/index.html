@@ -11,6 +11,10 @@
 	
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnjB4VvMNJHwO-os3NVef-1Xizy2uKOdo&libraries=places"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/geocomplete/1.7.0/jquery.geocomplete.min.js"></script>
+	<script>
+		$('#pickup').geocomplete();
+		$.fn.geocomplete($('#pickup'));
+	</script>
         
 	<style>
 	[data-role=page]{height: 100% !important; position:relative !important;}
@@ -62,11 +66,8 @@
 		</div>
 	</div>
 	<!-- End Home Page 1 //-->
-	<!-- Begin Order Page 2//-->
+	<!-- Begin Order Page 2//-->	
 	
-	<script>
-		$('#pickup').geocomplete();
-	</script>
 	<div data-role="page" id="orderPage">
 		<div data-role="header">
 			<h1>Order Taxi</h1>
