@@ -1,123 +1,159 @@
-<html>
+<!DOCTYPE html>
 <head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>White Rose Taxi</title>	
-    <link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/simple.min.css" />
-    <link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/jquery.mobile.icons.min.css" />
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>White Rose Taxi</title>
+	<link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/simple.min.css" />
+	<link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/jquery.mobile.icons.min.css" />
+	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 	<style>
-	[data-role=page]{height: 100% !important; position:relative !important;}
-	[data-role=footer]{bottom:0; position:fixed !important; top: auto !important; width:100%;}
+		[data-role=page]{height: 100% !important; position:relative !important;}
+		[data-role=footer]{bottom:0; position:fixed !important; top: auto !important; width:100%;}
 	</style>
-	</head>
-	<body>
+</head>
+<body>
 	<!-- Home Page 1 //-->
-<div data-role="page" id="homePage">
-<div data-role="header">
-<h1>White Rose Taxi</h1>
-</div>
-<div data-role="main" class="ui-content">
-<div style="text-align: center;"><img style="border-radius: 10px;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" /></div>
-<a style="text-decoration: none;" href="#orderPage"> <button>ORDER TAXI</button> </a> <button>FARE ESTIMATE <br /><span style="font-size: 12px;">(Coming Soon)</span></button> <a style="text-decoration: none;" href="tel:717.852.7673"> <button>CONTACT US</button> </a>
-<ul style="font-size: 12px;">
-<li>$1.80 for the first 1/5th of a mile</li>
-<li>$1.90 for each additional mile.</li>
-<li>$0.38 per minute wait time.</li>
-<li>$5.00 for each returned item.</li>
-<li>$1.00 for night time differential.</li>
-<li>We now take credit cards its a $10.00 minimum</li>
-</ul>
-<p style="font-size: 14px;">For more information please visit <a href="http://www.whiterosetaxi.com/" class="ui-link">White Rose Taxi.</a></p>
-<label for="slider1">Input slider:</label> <input type="range" name="slider1" id="slider1" value="50" min="0" max="100" data-theme="a" />
-<fieldset data-role="fieldcontain" data-type="horizontal"><legend>Cache settings:</legend> <input type="radio" name="radio-choice-a1" id="radio-choice-a1" value="on" checked="checked" /> <label for="radio-choice-a1">On</label> <input type="radio" name="radio-choice-a1" id="radio-choice-b1" value="off" /> <label for="radio-choice-b1">Off</label></fieldset>
-</div>
-<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &amp;nbsp© 2018 White Rose Taxi</span></div>
-</div>
-<!-- End Home Page 1 //-->
-<!-- Begin Order Page 2//-->
-<div data-role="page" id="orderPage">
-<div data-role="header">
-<h1>Order Taxi</h1>
-</div>
-<div data-role="main" class="ui-content">
-<form class="ui-field-contain" name="updateForm" id="updateForm">
-<fieldset><label for="text-basic">Name:</label> <input type="text" name="name" id="name" value="" /> <label for="phone">Phone:</label> <input type="tel" name="phone" id="phone" value="" placeholder="Required" required="" /> <label for="pickup">Pickup Location:</label> <input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" /> <label for="destination">Destination:</label> <input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" /> <label for="textarea">Custom Message (Optional):</label> <textarea name="customMsg" type="textarea" cols="75" rows="5" id="customMsg" placeholder="What else should we know?"></textarea></fieldset>
-</form>
-<a style="text-decoration: none;" href="#waitPage"><button id="send" class="ui-shadow ui-btn ui-corner-all" type="submit">SEND</button></a></div>
-<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &amp;nbsp© 2018 White Rose Taxi</span></div>
-</div>
-<!-- End Order Page //-->
-<!-- Begin wait Page //-->
-<div data-role="page" id="waitPage">
-<div data-role="header">
-<h1>Waiting for Taxi</h1>
-</div>
-<div data-role="main" class="ui-content">
-<div data-rel="dialog" data-transition="pop" id="waitingOnDispatch" style="text-align: center;"><img id="loader" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/ajax-loader.gif" />
-<p>Waiting on response from dispatcher.</p>
-</div>
-<div id="time" style="text-align: center;">
-<h2>Wait Time:</h2>
-<h2 id="timer"></h2>
-<button style="bg-color: red;">CANCEL</button></div>
-</div>
-<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &amp;nbsp© 2018 White Rose Taxi</span></div>
-</div>
-<script>
-$('#send').click(function(){
-	setTimeout(function (){
-		setTimer(45); 
-		$('#waitingOnDispatch').hide(); 
-		$('#loader').hide(); 
-		$('#time').show(); 
-	}, 5000);
-				
-});	
+	<div data-role="page" id="homePage">
+		<div data-role="header">
+			<h1>White Rose Taxi</h1>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div style="text-align: center;"><img style="border-radius: 10px;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" /></div>
+			<a style="text-decoration: none;" href="#orderPage"> 
+				<button>ORDER TAXI</button> </a> 
+				<button>FARE ESTIMATE <br /><span style="font-size: 12px;">(Coming Soon)</span></button> <a style="text-decoration: none;" href="tel:717.852.7673"> <button>CONTACT US</button> </a>
+			<ul style="font-size: 12px;">
+				<li>$1.80 for the first 1/5th of a mile</li>
+				<li>$1.90 for each additional mile.</li>
+				<li>$0.38 per minute wait time.</li>
+				<li>$5.00 for each returned item.</li>
+				<li>$1.00 for night time differential.</li>
+				<li>We now take credit cards its a $10.00 minimum</li>
+			</ul>
+			<p style="font-size: 14px;">For more information please visit <a href="https://www.whiterosetaxi.com/" class="ui-link">White Rose Taxi.</a></p>
+			<label for="slider1">Input slider:</label>
+			<input type="range" name="slider1" id="slider1" value="50" min="0" max="100" data-theme="a" />
+			<fieldset data-role="fieldcontain" data-type="horizontal">
+				<legend>Cache settings:</legend>
+				<input type="radio" name="radio-choice-a1" id="radio-choice-a1" value="on" checked="checked" /> <label for="radio-choice-a1">On</label> <input type="radio" name="radio-choice-a1" id="radio-choice-b1" value="off" /> <label for="radio-choice-b1">Off</label>
+			</fieldset>
+		</div>
+		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
+	</div>
+	<!-- End Home Page 1 //-->
+	<!-- Begin Order Page 2//-->
+	<div data-role="page" id="orderPage">
+		<div data-role="header">
+			<h1>Order Taxi</h1>
+		</div>
+		<div data-role="main" class="ui-content">
+			<form class="ui-field-contain" name="updateForm" id="updateForm">
+				<fieldset><label for="text-basic">Name:</label> <input type="text" name="name" id="name" value="" /> <label for="phone">Phone:</label> <input type="tel" name="phone" id="phone" value="" placeholder="Required" required="" /> <label for="pickup">Pickup Location:</label> <input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" /> <label for="destination">Destination:</label> <input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" /> <label for="textarea">Custom Message (Optional):</label> <textarea name="customMsg" type="textarea" cols="75" rows="5" id="customMsg" placeholder="What else should we know?"></textarea></fieldset>
+			</form>
+			<a style="text-decoration: none;" href="#waitPage"><button id="send" class="ui-shadow ui-btn ui-corner-all" type="submit">SEND</button></a>
+		</div>
+		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
 
-	function startTimer(duration, display) {
-		var timer = duration, minutes, seconds;
-		setInterval(function () {
-			minutes = parseInt(timer / 60, 10)
-			seconds = parseInt(timer % 60, 10);
-
-			minutes = minutes < 10 ? "0" + minutes : minutes;
-			seconds = seconds < 10 ? "0" + seconds : seconds;
-
-			display.textContent = minutes + ":" + seconds;
-
-			if (--timer < 0) {
-				timer = duration;
+			$('#send').click(function() {
+				$.ajax({
+					url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
+					type: "GET",
+					dataType: 'json',
+					contentType: 'application/json',
+					data: $($('#updateForm')).serialize(),
+					success: function (data) {
+					
+						alert(data);
+					
+					},
+					error: function (jXHR, textStatus, errorThrown) {
+						//alert(errorThrown);
+					}
+				});
+			});
+		});
+	</script>
+	
+	<!-- End Order Page //-->
+	<!-- Begin wait Page //-->
+	<div data-role="page" id="waitPage">
+		<div data-role="header">
+			<h1>Waiting for Taxi</h1>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-rel="dialog" data-transition="pop" id="waitingOnDispatch" style="text-align: center;">
+				<img id="loader" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/ajax-loader.gif" />
+				<p>Waiting on response from dispatcher.</p>
+			</div>
+			<div id="time" style="text-align: center;">
+				<h2>Wait Time:</h2>
+				<h2 id="timer"></h2>
+				<button style="bg-color: red;">CANCEL</button>
+			</div>
+		</div>
+		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
+	</div>
+	
+	
+	
+	
+	<script>
+		$('#send').click(function(){
+			setTimeout(function (){
+				setTimer(45); 
+				$('#waitingOnDispatch').hide(); 
+				$('#loader').hide(); 
+				$('#time').show(); 
+			}, 5000);
+						
+		});	
+		
+			function startTimer(duration, display) {
+				var timer = duration, minutes, seconds;
+				setInterval(function () {
+					minutes = parseInt(timer / 60, 10)
+					seconds = parseInt(timer % 60, 10);
+		
+					minutes = minutes < 10 ? "0" + minutes : minutes;
+					seconds = seconds < 10 ? "0" + seconds : seconds;
+		
+					display.textContent = minutes + ":" + seconds;
+		
+					if (--timer < 0) {
+						timer = duration;
+					}
+				}, 1000);
 			}
-		}, 1000);
-	}
-
-	function setTimer(mins) {
-		var time = 60 * mins,
-			display = document.querySelector('#timer');
-		startTimer(time, display);
-	};
-</script>
-<script>
-function initAutocomplete() {
-    // Create the autocomplete object, restricting the search to geographical
-    // location types.
-    autocomplete = new google.maps.places.Autocomplete(
-        /** @type {!HTMLInputElement} */(document.getElementById('pickup')),
-        {types: ['geocode']});
-
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    autocomplete.addListener('place_changed', fillInAddress);
-  }
-
-  function fillInAddress() {
-    // Get the place details from the autocomplete object.
-    var place = autocomplete.getPlace();
-
-  }
-</script><script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVzTnX1B1vuuP9n6CYPXvxporMgoDCl-Q&amp;libraries=places&amp;callback=initAutocomplete" async="" defer="defer"></script></body>
+		
+			function setTimer(mins) {
+				var time = 60 * mins,
+					display = document.querySelector('#timer');
+				startTimer(time, display);
+			};
+	</script>
+	<script>
+		function initAutocomplete() {
+		    // Create the autocomplete object, restricting the search to geographical
+		    // location types.
+		    autocomplete = new google.maps.places.Autocomplete(
+		        /** @type {!HTMLInputElement} */(document.getElementById('pickup')),
+		        {types: ['geocode']});
+		
+		    // When the user selects an address from the dropdown, populate the address
+		    // fields in the form.
+		    autocomplete.addListener('place_changed', fillInAddress);
+		  }
+		
+		  function fillInAddress() {
+		    // Get the place details from the autocomplete object.
+		    var place = autocomplete.getPlace();
+		
+		  }
+	</script><script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVzTnX1B1vuuP9n6CYPXvxporMgoDCl-Q&libraries=places&callback=initAutocomplete" async defer=></script>
+</body>
 </html>
