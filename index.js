@@ -36,7 +36,7 @@ socket.sockets.on('connection', function (socket) {
 		
 		socket.on('waitTime', function(data){
 		  console.log(data);
-		  socket.broadcast.emit('watTime', data);
+		  socket.broadcast.emit('waitTime', data);
 		});
 
         socket.on("disconnected", function () {
