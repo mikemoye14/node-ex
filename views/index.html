@@ -6,8 +6,12 @@
 	<link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/simple.min.css" />
 	<link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/jquery.mobile.icons.min.css" />
 	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
-	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>	
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	<meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="948345909344-tv4s24h5701sjicbeqcs9ai2beaaqof6.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 	<style>
 		[data-role=page]{height: 100% !important; position:relative !important;}
 		[data-role=footer]{bottom:0; position:fixed !important; top: auto !important; width:100%;}
@@ -21,6 +25,42 @@
 		</div>
 		<div data-role="main" class="ui-content">
 			<div style="text-align: center;"><img style="border-radius: 10px;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" /></div>
+			<div id="my-signin2"></div>
+  <script>
+    function onSuccess(googleUser) {
+      console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+    }
+    function onFailure(error) {
+      console.log(error);
+    }
+    function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 240,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onSuccess,
+        'onfailure': onFailure
+      });
+    }
+  </script>
+    <script>
+      function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("ID Token: " + id_token);
+      };
+    </script>
 			<a style="text-decoration: none;" href="#orderPage"> 
 				<button>ORDER TAXI</button> </a> 
 				<button>FARE ESTIMATE <br /><span style="font-size: 12px;">(Coming Soon)</span></button> <a style="text-decoration: none;" href="tel:717.852.7673"> <button>CONTACT US</button> </a>
@@ -49,34 +89,81 @@
 			<h1>Order Taxi</h1>
 		</div>
 		<div data-role="main" class="ui-content">
-			<form class="ui-field-contain" name="updateForm" id="updateForm">
-				<fieldset><label for="text-basic">Name:</label> <input type="text" name="name" id="name" value="" /> <label for="phone">Phone:</label> <input type="tel" name="phone" id="phone" value="" placeholder="Required" required="" /> <label for="pickup">Pickup Location:</label> <input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" /> <label for="destination">Destination:</label> <input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" /> <label for="textarea">Custom Message (Optional):</label> <textarea name="customMsg" type="textarea" cols="75" rows="5" id="customMsg" placeholder="What else should we know?"></textarea></fieldset>
+			<form class="ui-field-contain" name="taxiOrderForm" id="taxiOrderForm">
+				<fieldset>
+					<label for="name">Name:</label>
+					<input type="text" name="name" id="name" value="" /> 
+					<label for="phone">Phone:</label>
+					<input type="tel" name="phone" id="phone" value="" placeholder="Required" required="" />
+					<label for="pickup">Pickup Location:</label>
+					<input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" />
+					<label for="destination">Destination:</label>
+					<input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" />
+					<label for="customMsg">Additional Information (Optional):</label>
+					<textarea name="customMsg" type="textarea" cols="75" rows="5" id="customMsg" placeholder="What else should we know?"></textarea>
+					<input type="hidden" name="uid" id="uid" value="" />
+				</fieldset>
 			</form>
 			<a style="text-decoration: none;" href="#waitPage"><button id="send" class="ui-shadow ui-btn ui-corner-all" type="submit">SEND</button></a>
 		</div>
 		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
 	</div>
+	
 	<script type="text/javascript">
-		$(document).ready(function () {
-
-			$('#send').click(function() {
-				$.ajax({
-					url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
-					type: "GET",
-					dataType: 'json',
-					contentType: 'application/json',
-					data: $($('#updateForm')).serialize(),
-					success: function (data) {
-					
-						alert(data);
-					
-					},
-					error: function (jXHR, textStatus, errorThrown) {
-						//alert(errorThrown);
-					}
+	
+		function uid() {
+		  // Math.random should be unique because of its seeding algorithm.
+		  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+		  // after the decimal.
+		  return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
+		}
+		
+		var uid = uid();
+		
+		$('#uid').val(uid);
+			
+		$('#send').click(function() {
+			
+			try{
+	
+				var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
+				
+				socket.on('init', function(data) {
+					console.log(data)
 				});
-			});
+				
+				socket.on('connect',function(data){
+					console.log('Connection Established!');
+					socket.emit('order', $('#taxiOrderForm').serialize());
+					console.log('Order Sent');
+				});
+				
+				socket.on("disconnect", function () {
+					console.log('Disconnected from Taxi Dispatch');
+					alert('Disconnected from Taxi Dispatch');
+				});
+			
+			}catch (error){
+			
+				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);
+				
+			}
+			
+			//$.ajax({
+				//url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
+				//type: "GET",
+				//data: $('#taxiOrderForm').serialize(),
+				//success: function (data) {
+				
+					//alert(data);
+				
+				//},
+				//error: function (jXHR, textStatus, errorThrown) {
+					//alert(errorThrown);
+				//}
+			//});
 		});
+	
 	</script>
 	
 	<!-- End Order Page //-->
@@ -99,44 +186,8 @@
 		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
 	</div>
 	
-	
-	
-	
-	<script>
-		$('#send').click(function(){
-			setTimeout(function (){
-				setTimer(45); 
-				$('#waitingOnDispatch').hide(); 
-				$('#loader').hide(); 
-				$('#time').show(); 
-			}, 5000);
-						
-		});	
+	<script>		
 		
-			function startTimer(duration, display) {
-				var timer = duration, minutes, seconds;
-				setInterval(function () {
-					minutes = parseInt(timer / 60, 10)
-					seconds = parseInt(timer % 60, 10);
-		
-					minutes = minutes < 10 ? "0" + minutes : minutes;
-					seconds = seconds < 10 ? "0" + seconds : seconds;
-		
-					display.textContent = minutes + ":" + seconds;
-		
-					if (--timer < 0) {
-						timer = duration;
-					}
-				}, 1000);
-			}
-		
-			function setTimer(mins) {
-				var time = 60 * mins,
-					display = document.querySelector('#timer');
-				startTimer(time, display);
-			};
-	</script>
-	<script>
 		function initAutocomplete() {
 		    // Create the autocomplete object, restricting the search to geographical
 		    // location types.
@@ -154,6 +205,7 @@
 		    var place = autocomplete.getPlace();
 		
 		  }
-	</script><script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVzTnX1B1vuuP9n6CYPXvxporMgoDCl-Q&libraries=places&callback=initAutocomplete" async defer=></script>
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVzTnX1B1vuuP9n6CYPXvxporMgoDCl-Q&libraries=places&callback=initAutocomplete" async defer=></script>
 </body>
 </html>
