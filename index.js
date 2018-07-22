@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var socket = require('socket.io')(server);
 
 var dispatch = socket.of('/dispatch');
-dispatch.on('connect', function(data){
+dispatch.on('connection', function(data){
   console.log(data);
 });
 
@@ -27,8 +27,8 @@ dispatch.on('waitTime', function(data){
 
 socket.sockets.on('connection', function (socket) {
 		
-		socket.on('connect', function (data) {
-                socket.emit('connect', 'Connected to Dispatch');
+		socket.on('connection', function (data) {
+                socket.emit('connection', 'Connected to Dispatch');
 				console.log(data);
         });
 
@@ -38,7 +38,7 @@ socket.sockets.on('connection', function (socket) {
 				dispatch.emit('order', data);
         });
 
-        socket.on("disconnect", function () {
+        socket.on("disconnected", function () {
 
         });
 
