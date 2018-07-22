@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //users = [];
 
-var socket = require('socket.io').listen(server);
+var socket = require('./lib/socket.io').listen(server);
 
 socket.sockets.on('connection', function (socket) {
 	//socket.broadcast.emit('users', users);
