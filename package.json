@@ -21,7 +21,7 @@
     "url": "git://github.com/socketio/socket.io"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
     "test": "nyc mocha --reporter spec --slow 200 --bail --timeout 10000 test/socket.io.js"
   },
   "dependencies": {
