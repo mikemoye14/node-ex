@@ -18,8 +18,10 @@ var socket = require('socket.io')(server);
 
 socket.sockets.on('connection', function (socket) {
 
-        socket.on('init', function (data) {
+		
+		socket.on('connect', function (data) {
                 socket.emit('init', 'Connected to Dispatch');
+				console.log(data);
         });
 
         socket.on('order', function (data) {
