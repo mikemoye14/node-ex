@@ -32,12 +32,13 @@
 			socket.emit('connect', 'New Dispatcher' + uid);											
 			socket.on('connect',function(data){
 				
-				console.log('Connection Established!');					
+				console.log('Connection Established!');
+				$('#statusFooter').html('Connection Established!');				
 			});
 			
 			socket.on('order',function(data){
 				console.log(data);
-				
+				$('#statusFooter').html(data);
 				var order = QueryStringToJSON(data);
 				
 				$('#orders').append(
@@ -54,10 +55,12 @@
 			
 			socket.on("disconnect", function () {
 				console.log('Disconnected from Taxi Dispatch');
+				$('#statusFooter').html('Disconnected from Taxi Dispatch');
 				//alert('Disconnected from Taxi Dispatch');
 			});
 		}catch (error){			
-				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
+				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);	
+				$('#statusFooter').html('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
 		}
 		
 		function QueryStringToJSON(data) {            
@@ -85,8 +88,8 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a class="ui-btn-active ui-state-persist" href="#home">Home</a></li>
-					<li><a href="#dispatch">Dispatch</a></li>
 					<li><a href="#jobs">Jobs</a></li>
+					<li><a href="#dispatch">Dispatch</a></li>					
 					<li><a href="#vehicles">Vehicles</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -97,31 +100,10 @@
 				<h1>White Rose Dispatcher App</h1>
 			</div>
 		</div>	
-		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
-	</div>
-	
-	<!-- dispatch //-->
-	<div data-role="page" id="dispatch">
-		<div data-role="header" data-position="fixed">
-			<h1>White Rose Taxi</h1>
+		<div data-role="footer" data-type="footer">
+			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
+			<span id="statusFooter" style="text-align: right;"></span>
 		</div>
-		<div data-role="header" data-id="dispatch">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#home">Home</a></li>
-					<li><a class="ui-btn-active ui-state-persist" href="#dispatch">Dispatch</a></li>
-					<li><a href="#jobs">Jobs</a></li>
-					<li><a href="#vehicles">Vehicles</a></li>
-				</ul>
-			</div><!-- /navbar -->
-		</div>
-		<div data-role="main" class="ui-content">
-			<div style="text-align: center;">
-				<img style="border-radius: 10px;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" />
-				<h1>Dispatch</h1>
-			</div>
-		</div>	
-		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
 	</div>
 	
 	<!-- jobs //-->
@@ -134,8 +116,8 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#home">Home</a></li>
-					<li><a href="#dispatch">Dispatch</a></li>
 					<li><a class="ui-btn-active ui-state-persist" href="#jobs">Jobs</a></li>
+					<li><a href="#dispatch">Dispatch</a></li>					
 					<li><a href="#vehicles">Vehicles</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -144,46 +126,77 @@
 			<div style="text-align: center;">
 				<h1>Jobs</h1>
 
-<table data-role="table" id="jobsTable" data-mode="columntoggle" data-column-btn-text="Filter" data-column-btn-theme="a" class="ui-shadow table-stroke">
-  <thead>
-    <tr>
-	<th class="label">
-		ID
-	  </th>
-      <th class="label">
-		Name
-	  </th>
-    <th class="label">
-        Phone
-    </th>
-    <th class="label">
-        Pickup
-    </th>
-    <th class="label">
-        Drop Off
-    </th>
-	<th class="label">
-        Status
-    </th>
-    </tr>
-  </thead>
-  <tbody id="orders">
-	
-  </tbody>
-</table>
-<!-- Popups for lightbox images -->
-<div id="waitTimeDiv" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
-    <label for="waitTime"><h2>Wait time in minutes?</h2></label>
-	<input type="range" name="waitTime" id="waitTime" value="30" min="0" max="120" data-theme="b" />
-	<br />
-	<button style="background-color: green; color: white;"><strong>Accept</strong></button>
-	<button style="background-color: red; color: white;"><strong>Cancel</strong></button>
-</div>
+				<table data-role="table" id="jobsTable" data-mode="columntoggle" data-column-btn-text="Filter" data-column-btn-theme="a" class="ui-shadow table-stroke">
+				  <thead>
+					<tr>
+					<th class="label">
+						ID
+					  </th>
+					  <th class="label">
+						Name
+					  </th>
+					<th class="label">
+						Phone
+					</th>
+					<th class="label">
+						Pickup
+					</th>
+					<th class="label">
+						Drop Off
+					</th>
+					<th class="label">
+						Status
+					</th>
+					</tr>
+				  </thead>
+				  <tbody id="orders">
+					
+				  </tbody>
+				</table>
+				<!-- Popups for lightbox images -->
+				<div id="waitTimeDiv" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
+					<label for="waitTime"><h2>Wait time in minutes?</h2></label>
+					<input type="range" name="waitTime" id="waitTime" value="30" min="0" max="120" data-theme="b" />
+					<br />
+					<button style="background-color: green; color: white;"><strong>Accept</strong></button>
+					<button style="background-color: red; color: white;"><strong>Cancel</strong></button>
+				</div>
 
 			</div>
 		</div>	
-		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
+		<div data-role="footer" data-type="footer">
+			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
+			<span id="statusFooter" style="text-align: right;"></span>
+		</div>
 	</div>
+	
+	<!-- dispatch //-->
+	<div data-role="page" id="dispatch">
+		<div data-role="header" data-position="fixed">
+			<h1>White Rose Taxi</h1>
+		</div>
+		<div data-role="header" data-id="dispatch">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#home">Home</a></li>					
+					<li><a href="#jobs">Jobs</a></li>
+					<li><a class="ui-btn-active ui-state-persist" href="#dispatch">Dispatch</a></li>
+					<li><a href="#vehicles">Vehicles</a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div>
+		<div data-role="main" class="ui-content">
+			<div style="text-align: center;">
+				<img style="border-radius: 10px;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" />
+				<h1>Dispatch</h1>
+			</div>
+		</div>	
+		<div data-role="footer" data-type="footer">
+			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
+			<span id="statusFooter" style="text-align: right;"></span>
+		</div>
+	</div>
+	
 	
 	<!-- Vehicles //-->
 	
@@ -194,8 +207,8 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#home">Home</a></li>
-					<li><a href="#dispatch">Dispatch</a></li>
 					<li><a href="#jobs">Jobs</a></li>
+					<li><a href="#dispatch">Dispatch</a></li>					
 					<li><a class="ui-btn-active ui-state-persist" href="#vehicles">Vehicles</a></li>
 				</ul>
 			</div><!-- /navbar -->
@@ -206,6 +219,9 @@
 				<h1>Vehicles</h1>
 			</div>
 		</div>	
-		<div data-role="footer" data-type="footer"><span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span></div>
+		<div data-role="footer" data-type="footer">
+			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
+			<span id="statusFooter" style="text-align: right;"></span>
+		</div>
 	</div>
 </body>
