@@ -16,11 +16,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var socket = require('socket.io')(server);
 
+var nsp = socket.of('/dispatch');
+nsp.on('connection', function(socket){
+  console.log('someone connected to dispatch nsp');
+});
+
 socket.sockets.on('connection', function (socket) {
 
 		
 		socket.on('connect', function (data) {
-                socket.emit('init', 'Connected to Dispatch');
+                socket.emit('connect', 'Connected to Dispatch');
 				console.log(data);
         });
 
