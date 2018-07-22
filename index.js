@@ -17,7 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 var socket = require('socket.io')(server);
 
 socket.sockets.on('connection', function (socket) {
-        socket.broadcast.emit('connect', 'Connected to Taxi Dispatch');
 
         socket.on('init', function (data) {
                 socket.emit('init', 'Connected to Dispatch');
