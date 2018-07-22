@@ -21,8 +21,6 @@ dispatch.on('init', function(data){
   console.log(data);
 });
 
-
-
 socket.sockets.on('connection', function (socket) {
 		
 		socket.on('init', function (data) {
@@ -38,6 +36,7 @@ socket.sockets.on('connection', function (socket) {
 		
 		socket.on('waitTime', function(data){
 		  console.log(data);
+		  socket.broadcast.emit('watTime', data);
 		});
 
         socket.on("disconnected", function () {
