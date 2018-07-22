@@ -21,34 +21,16 @@ var socket = require('socket.io')(server);
 socket.sockets.on('connection', function (socket) {
 	//socket.broadcast.emit('users', users);
 	
-	socket.on('init', function (data) {	
-		socket.emit('init', 'Connected to Dispatch Server');		 
+	//socket.on('init', function (data) {	
+		//socket.emit('init', 'Connected to Dispatch Server');		 
 		//socket.emit('users', users);
-	});	
+	//});	
 	
-	//socket.on('name', function (name) {	
-	//	var nameAvailable = true;	
-	//	try{	
-	//		users.forEach(function(val, index, users){			
-	//			if(val.userName == name){					
-	//				nameAvailable = false;
-	//			}		
-	//		});	
-	//	}finally{
-	//		if(nameAvailable){
-	//			users.push({id: socket.id, userName: name});	
-	//			socket.broadcast.emit('name', {id: socket.id, userName: name});
-	//			console.log(name + ' connected.');
-	//			socket.emit('validName', name);				
-	//		}else{
-	//			socket.emit('invalidName', name);
-	//		}		
-	//	}
-  // });
+	
 
 	socket.on('order', function (data) {	
-		console.log('new Order from: ' + data.name);
-		socket.emit('order', data.order);
+		console.log('new Order from: ' + data);
+		//socket.emit('order', data.order);
 		//socket.broadcast.emit('chatMsg', data.userName + ' says: ' + data.msg);		
    });
 
