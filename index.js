@@ -17,8 +17,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 var socket = require('socket.io')(server);
 
 var dispatch = socket.of('/dispatch');
-dispatch.on('connection', function(socket){
+dispatch.on('connection', function(data){
   console.log('New Dispatcher Connected');
+});
+
+dispatch.on('waitTime', function(data){
+  console.log(data);
 });
 
 socket.sockets.on('connection', function (socket) {
