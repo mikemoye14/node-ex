@@ -130,8 +130,8 @@
 	
 			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
 			
-			socket.emit('connect', 'New Client: ' + uid);
-			socket.on('connect',function(data){				
+			socket.emit('connection', 'New Client: ' + uid);
+			socket.on('connection',function(data){				
 				console.log('Connection Established!');
 				$('#statusFooter').html('Connection Established!');
 			});
@@ -140,7 +140,7 @@
 				console.log(data);
 				$('#statusFooter').html(data);
 			});
-			socket.on("disconnect", function () {
+			socket.on("disconnected", function () {
 				console.log('Disconnected from Taxi Dispatch');
 				$('#statusFooter').html('Disconnected from Taxi Dispatch');
 				//alert('Disconnected from Taxi Dispatch');
