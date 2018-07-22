@@ -31,7 +31,7 @@ socket.sockets.on('connection', function (socket) {
         socket.on('order', function (data) {
                 console.log('New Order: ' + data);
                 socket.emit('order', 'Order Received');
-		io.of('/dispatch').emit('order', data);
+				dispatch.emit('order', data);
         });
 
         socket.on("disconnect", function () {
