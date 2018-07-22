@@ -38,9 +38,8 @@
 	
 			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com/dispatch');
 			
-			socket.emit('connect', 'New Dispatcher Connected');											
-			socket.on('connect',function(data){
-				
+			socket.emit('connection', 'New Dispatcher Connected');											
+			socket.on('connection',function(data){				
 				console.log(data);
 				$('#statusFooter').html('Connection Established!');				
 			});
@@ -63,7 +62,7 @@
 				
 			});
 			
-			socket.on("disconnect", function () {
+			socket.on("disconnected", function () {
 				console.log('Disconnected from Taxi Dispatch');
 				$('#statusFooter').html('Disconnected from Taxi Dispatch');
 				//alert('Disconnected from Taxi Dispatch');
