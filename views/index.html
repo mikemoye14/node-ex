@@ -95,12 +95,12 @@
 					<input type="text" name="name" id="name" value="" /> 
 					<label for="phone">Phone:</label>
 					<input type="tel" name="phone" id="phone" value="" placeholder="Required" required="" />
-					<label for="pickup">Pickup Location:</label>
+					<label for="pickup">Pickup:</label>
 					<input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" />
 					<label for="destination">Destination:</label>
 					<input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" />
-					<label for="customMsg">Additional Information (Optional):</label>
-					<textarea name="customMsg" type="textarea" cols="75" rows="5" id="customMsg" placeholder="What else should we know?"></textarea>
+					<label for="info">Additional Information (Optional):</label>
+					<textarea name="info" type="textarea" cols="75" rows="5" id="info" placeholder="What else should we know?"></textarea>
 					<input type="hidden" name="uid" id="uid" value="" />
 				</fieldset>
 			</form>
@@ -121,47 +121,45 @@
 		var uid = uid();
 		
 		$('#uid').val(uid);
-			
-		$('#send').click(function() {
-			
-			try{
+		try{
 	
 				var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
 				
 				socket.on('init', function(data) {
 					console.log(data)
-				});
-				
+				});				
 				socket.on('connect',function(data){
-					console.log('Connection Established!');
-					socket.emit('order', $('#taxiOrderForm').serialize());
-					console.log('Order Sent');
+					console.log('Connection Established!');					
 				});
-				
+				socket.on('order',function(data){
+					console.log(data);					
+				});
 				socket.on("disconnect", function () {
 					console.log('Disconnected from Taxi Dispatch');
-					alert('Disconnected from Taxi Dispatch');
+					//alert('Disconnected from Taxi Dispatch');
 				});
-			
-			}catch (error){
-			
-				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);
-				
+		}catch (error){			
+				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
 			}
 			
-			//$.ajax({
-				//url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
-				//type: "GET",
-				//data: $('#taxiOrderForm').serialize(),
-				//success: function (data) {
+		$('#send').click(function() {			
+			
+				socket.emit('order', JSON.parse(JSON.stringify($('#taxiOrderForm').serialize())));
+					console.log('Order Sent');			
+			
+			$.ajax({
+				url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
+				type: "GET",
+				data: $('#taxiOrderForm').serialize(),
+				success: function (data) {
 				
 					//alert(data);
 				
-				//},
-				//error: function (jXHR, textStatus, errorThrown) {
+				},
+				error: function (jXHR, textStatus, errorThrown) {
 					//alert(errorThrown);
-				//}
-			//});
+				}
+			});
 		});
 	
 	</script>
