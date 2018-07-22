@@ -16,13 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var socket = require('socket.io')(server);
 
-var nsp = socket.of('/dispatch');
-nsp.on('connection', function(socket){
-  console.log('someone connected to dispatch nsp');
+var dispatch = socket.of('/dispatch');
+dispatch.on('connection', function(socket){
+  console.log('New Dispatcher Connected');
 });
 
 socket.sockets.on('connection', function (socket) {
-
 		
 		socket.on('connect', function (data) {
                 socket.emit('connect', 'Connected to Dispatch');
@@ -32,6 +31,7 @@ socket.sockets.on('connection', function (socket) {
         socket.on('order', function (data) {
                 console.log('New Order: ' + data);
                 socket.emit('order', 'Order Received');
+				dispatch.broadcast.emit('order', data);
         });
 
         socket.on("disconnect", function () {
