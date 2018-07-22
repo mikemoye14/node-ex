@@ -16,6 +16,8 @@
 	
 	<script>
 	
+	
+			
 	function uid() {
 		  // Math.random should be unique because of its seeding algorithm.
 		  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
@@ -23,16 +25,23 @@
 		  return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
 		}
 		
+		function setOrderId(id){
+		
+			orderId = id;
+		
+		}
+		
+		var orderId = '';
 		var uid = uid();
 	
 		try{
 	
 			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com/dispatch');
 			
-			socket.emit('connect', 'New Dispatcher' + uid);											
+			socket.emit('connect', 'New Dispatcher Connected');											
 			socket.on('connect',function(data){
 				
-				console.log('Connection Established!');
+				console.log(data);
 				$('#statusFooter').html('Connection Established!');				
 			});
 			
@@ -42,12 +51,13 @@
 				var order = QueryStringToJSON(data);
 				
 				$('#orders').append(
-					'<tr><td><a href="#waitTimeDiv" data-rel="popup" data-position-to="window">' + order.uid + '</a></td>' +
-					'<td>' + order.name + '</td>' +
-					'<td>' + order.phone + '</td>' +
-					'<td>' + order.pickup + '</td>' +
-					'<td>' + order.destination + '</td>' +
-					'<th data-priority="1">Waiting</th>' +
+					'<tr>' + 
+					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.uid + '</div></a></td>' +
+					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.name + '</div></a></td>' +
+					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.phone + '</div></a></td>' +
+					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.pickup + '</div></a></td>' +
+					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.destination + '</div></a></td>' +
+					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">Waiting</td>' +
 					'</tr>'
 				);
 				
@@ -61,6 +71,14 @@
 		}catch (error){			
 				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);	
 				$('#statusFooter').html('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
+		}
+		
+		function sendWaitTime(waitTime){
+	
+			socket.emit('waitTime', 'wait Time');//{'waitTime' : waitTime, 'id': uid});
+			console.log('Wait time sent: ' + waitTime);
+			$('#statusFooter').html('Wait time sent.');
+	
 		}
 		
 		function QueryStringToJSON(data) {            
@@ -126,25 +144,25 @@
 			<div style="text-align: center;">
 				<h1>Jobs</h1>
 
-				<table data-role="table" id="jobsTable" data-mode="columntoggle" data-column-btn-text="Filter" data-column-btn-theme="a" class="ui-shadow table-stroke">
+				<table data-role="table" id="jobsTable" data-column-btn-text="Filter" data-column-btn-theme="a" class="ui-body-d ui-shadow table-stripe ui-responsive"> <!-- data-mode="columntoggle" //--> 
 				  <thead>
 					<tr>
-					<th class="label">
+					<th style="text-align: center;" class="label" data-priority="6">
 						ID
 					  </th>
-					  <th class="label">
+					  <th style="text-align: center;" class="label" data-priority="5">
 						Name
 					  </th>
-					<th class="label">
+					<th style="text-align: center;" class="label" data-priority="1">
 						Phone
 					</th>
-					<th class="label">
+					<th style="text-align: center;" class="label" data-priority="2">
 						Pickup
 					</th>
-					<th class="label">
+					<th style="text-align: center;" class="label" data-priority="3">
 						Drop Off
 					</th>
-					<th class="label">
+					<th style="text-align: center;" class="label" data-priority="4">
 						Status
 					</th>
 					</tr>
@@ -158,8 +176,8 @@
 					<label for="waitTime"><h2>Wait time in minutes?</h2></label>
 					<input type="range" name="waitTime" id="waitTime" value="30" min="0" max="120" data-theme="b" />
 					<br />
-					<button style="background-color: green; color: white;"><strong>Accept</strong></button>
-					<button style="background-color: red; color: white;"><strong>Cancel</strong></button>
+					<a href="#" data-rel="back"><button style="background-color: green; color: white;" onclick="sendWaitTime($('#waitTime').val());" ><strong>Accept</strong></button></a>
+					<a href="#" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
 				</div>
 
 			</div>
