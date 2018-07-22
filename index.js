@@ -8,7 +8,7 @@ var port = process.env.PORT || 8080;
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
 }).on('connection', function(socket){
-    console.log('Connection established from: ' + socket.address().address + ' : ' + socket.address().port + ' - version: ' + socket.address().family);
+    //console.log('Connection established from: ' + socket.address().address + ' : ' + socket.address().port + ' - version: ' + socket.address().family);
 });
 
 // Routing
@@ -21,9 +21,7 @@ dispatch.on('init', function(data){
   console.log(data);
 });
 
-dispatch.on('waitTime', function(data){
-  console.log(data);
-});
+
 
 socket.sockets.on('connection', function (socket) {
 		
@@ -37,6 +35,10 @@ socket.sockets.on('connection', function (socket) {
                 socket.emit('order', 'Order Received');
 				dispatch.emit('order', data);
         });
+		
+		socket.on('waitTime', function(data){
+		  console.log(data);
+		});
 
         socket.on("disconnected", function () {
 
