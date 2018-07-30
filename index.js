@@ -38,6 +38,12 @@ socket.sockets.on('connection', function (socket) {
 		  console.log(data);
 		  socket.broadcast.emit('waitTime', data);
 		});
+		
+		socket.on('cancel', function(data){
+		  console.log('Cancel Request Received: ' + data);
+		  socket.broadcast.emit('cancel', data);
+		  dispatch.emit('cancel', data);
+		});
 
         socket.on("disconnected", function () {
 
