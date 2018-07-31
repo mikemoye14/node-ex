@@ -115,6 +115,16 @@
 	
 	<script type="text/javascript">
 	
+	$(document).ready(function(){
+		
+		
+		
+		var orderId; //order ID
+		
+		try{
+		
+		//generate Unique Identifier
+		
 		function uid() {
 		  // Math.random should be unique because of its seeding algorithm.
 		  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
@@ -122,38 +132,85 @@
 		  return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
 		}
 		
-		var uid = uid();
+		//set unique Id for order
 		
-		$('#uid').val(uid);
+		function setUid(){
 		
-		try{
-	
-			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
+			orderId = uid();		
+			$('#uid').val(orderId);
 			
-			socket.emit('connection', 'New Client: ' + uid);
-			socket.on('connection',function(data){				
-				console.log('Connection Established!');
+			console.log('new id set: ' + orderId);
+			
+		}	
+		
+		setUid();
+	
+	
+			//init socket
+			
+			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
+									
+			socket.emit('init', 'New Client connected with ID: ' + orderId + ' : ' + $('#uid').val());
+			socket.on('init',function(data){				
+				console.log('Connection Established! orderId: ' + orderId + ' : ' + $('#uid').val());
 				$('#statusFooter').html('Connection Established!');
-			});
+			});	
+
+			//receive order acknowledgement
 			
 			socket.on('order',function(data){
 				console.log(data);
 				$('#statusFooter').html(data);
 			});
+			
+			//receive wait time
+			
+			socket.on('waitTime',function(data){
+				console.log(data);				
+				if(orderId == data.id){
+					$('#waitingOnDispatch').hide();
+					$('#time').show();
+					setTimer(data.waitTime); //set wait time countdown
+					
+					while($('#timer').text() != '00:00'){
+						if($('#timer').text() == '00:00'){
+						$('#timer').html('Taxi is arriving soon.');
+							WebPayInterface.notification('Taxi Status', 'Your Taxi Has Arrived'); //send mobile app notification when wait time expires
+							break;
+						}
+					}
+					
+				}
+				$('#statusFooter').html(data);
+			});
+			
+			//receive order cancellation acknowledgement
+			
+			socket.on('cancel',function(data) {
+				if(orderId == data){
+				console.log('Cancel Request Received');
+					setUid();
+				}
+				
+			});
+			
+			//socket disconnect
+			
 			socket.on("disconnected", function () {
 				console.log('Disconnected from Taxi Dispatch');
 				$('#statusFooter').html('Disconnected from Taxi Dispatch');
 				//alert('Disconnected from Taxi Dispatch');
 			});
-		}catch (error){			
-				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
-		}
+
+			//send order
 			
-		$('#send').click(function() {			
+			$('#send').click(function() {			
 			
-				socket.emit('order', JSON.parse(JSON.stringify($('#taxiOrderForm').serialize())));
+				socket.emit('order', JSON.parse(JSON.stringify($('#taxiOrderForm').serialize()))); //send order data from form
 				console.log('Order Sent');
 				$('#statusFooter').html('Order Sent');				
+			
+			//send ajax request to google script to send email of order and record order in spread sheet
 			
 			$.ajax({
 				url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
@@ -169,6 +226,58 @@
 				}
 			});
 		});
+		
+		//count down timer
+		
+		function startTimer(duration, display) {
+			var timer = duration, minutes, seconds;
+			var interval = setInterval(function () {
+				minutes = parseInt(timer / 60, 10)
+				seconds = parseInt(timer % 60, 10);
+
+				minutes = minutes < 10 ? "0" + minutes : minutes;
+				seconds = seconds < 10 ? "0" + seconds : seconds;
+
+				display.textContent = minutes + ":" + seconds;
+
+				if (--timer < 0) {
+				
+				clearInterval(interval);
+					//timer = duration;
+				}
+			}, 1000);
+		}
+
+		function setTimer(time) {
+			var mins = 60 * time,
+				display = document.querySelector('#timer');
+			startTimer(mins, display);
+		};
+		
+		
+			//send order cancel request
+		
+			$('#cancelConfirmButton').click(function(){
+			
+				$('#waitingOnDispatch').show();
+				$('#time').hide();
+	
+				socket.emit('cancel', orderId);
+				console.log('Cancel Request Sent from: ' + orderId);
+				$('#statusFooter').html('Cancel Request Sent.');
+				
+				//setUid();
+				window.history.back();						
+			
+			});
+		
+		
+		}catch (error){			
+				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
+		}
+		
+		});
+		
 	
 	</script>
 	
@@ -183,11 +292,20 @@
 				<img id="loader" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/ajax-loader.gif" />
 				<p>Waiting on response from dispatcher.</p>
 			</div>
-			<div id="time" style="text-align: center;">
+			<div id="time" style="text-align: center; display: none;">
 				<h2>Wait Time:</h2>
 				<h2 id="timer"></h2>
-				<button style="bg-color: red;">CANCEL</button>
-			</div>
+			</div>			
+				<a href="#cancelConfirm" style="text-decoration: none;" data-rel="popup" data-position-to="window"><button style="background-color: red; color: white;" id="cancelOrder">CANCEL</button></a>
+				
+				<!-- Popups for lightbox images -->
+				<div id="cancelConfirm" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
+					<label><h2>Are you sure you want to cancel?</h2></label>
+					<br />
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" id="cancelConfirmButton"><strong>Accept</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
+				</div>
+				
 		</div>
 		<div data-role="footer" data-type="footer">
 			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
