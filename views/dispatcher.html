@@ -16,68 +16,15 @@
 	
 	<script>
 	
+	var orderId = '', socket, dispatch;
+	dispatch = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com/dispatch');
+	socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
 	
-			
 	function uid() {
 		  // Math.random should be unique because of its seeding algorithm.
 		  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
 		  // after the decimal.
 		  return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
-		}
-		
-		function setOrderId(id){
-		
-			orderId = id;
-		
-		}
-		
-		var orderId = '';
-		var uid = uid();
-	
-		try{
-	
-			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com/dispatch');
-			
-			socket.emit('connection', 'New Dispatcher Connected');											
-			socket.on('connection',function(data){				
-				console.log(data);
-				$('#statusFooter').html('Connection Established!');				
-			});
-			
-			socket.on('order',function(data){
-				console.log(data);
-				$('#statusFooter').html(data);
-				var order = QueryStringToJSON(data);
-				
-				$('#orders').append(
-					'<tr>' + 
-					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.uid + '</div></a></td>' +
-					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.name + '</div></a></td>' +
-					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.phone + '</div></a></td>' +
-					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.pickup + '</div></a></td>' +
-					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.destination + '</div></a></td>' +
-					'<td style="padding: 0px;"><a value="' + order.uid + '" onclick="setOrderId(this.value)" style="text-decoration: none; color: black;" href="#waitTimeDiv" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">Waiting</td>' +
-					'</tr>'
-				);
-				
-			});
-			
-			socket.on("disconnected", function () {
-				console.log('Disconnected from Taxi Dispatch');
-				$('#statusFooter').html('Disconnected from Taxi Dispatch');
-				//alert('Disconnected from Taxi Dispatch');
-			});
-		}catch (error){			
-				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);	
-				$('#statusFooter').html('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
-		}
-		
-		function sendWaitTime(waitTime){
-	
-			socket.emit('waitTime', 'wait Time');//{'waitTime' : waitTime, 'id': uid});
-			console.log('Wait time sent: ' + waitTime);
-			$('#statusFooter').html('Wait time sent.');
-	
 		}
 		
 		function QueryStringToJSON(data) {            
@@ -90,6 +37,106 @@
 			});
 
 			return JSON.parse(JSON.stringify(result));
+		}
+		
+		
+		
+		function setOrderId(id){		
+			orderId = id;		
+		}	
+			
+			dispatch.emit('init', 'New Dispatcher Connected');											
+			dispatch.on('init',function(data){				
+				console.log(data);
+				$('#statusFooter').html('Connection Established!');				
+			});
+			
+			dispatch.on('cancel',function(data) {
+					console.log('Cancel Request Received from: ' + '#' + data);					
+					
+					if($('#' + data).length){
+						//console.log('Cancel Request Received');
+						$('#' + data + ' .status').html('Cancelled').css('background-color', 'red').css('color', 'white');
+						//setUid();
+					}				
+				});
+			
+			dispatch.on('order',function(data){
+				console.log(data);
+				$('#statusFooter').html(data);
+				
+				WebPayInterface.notification('New Order', 'New Order Received'); //send mobile app notification when order is received
+				
+				if($('#noOrders').length == 1){
+					$('#noOrders').remove();
+				}
+				
+				var order = QueryStringToJSON(data);
+				
+				var pickup = order.pickup, destination = order.destination;
+				
+				for(i=0; i < order.pickup.length; i++) {
+ 
+					pickup = pickup.replace('+', ' ');
+					 
+				}
+				
+				for(i=0; i < order.destination.length; i++) {
+ 
+					destination = destination.replace('+', ' ');
+					 
+				}
+				
+				$('#orders').append(
+					'<tr id="' + order.uid + '">' + 
+					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + ($('#orders tr').length + 1) + '</div></a></td>' +
+					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.name + '</div></a></td>' +
+					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.phone + '</div></a></td>' +
+					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + pickup + '</div></a></td>' +
+					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + destination + '</div></a></td>' +
+					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%; background-color: yellow;" class="status">Waiting</td>' +
+					'</tr>'
+				);
+				
+			});
+			
+			dispatch.on("disconnected", function () {
+				console.log('Disconnected from Taxi Dispatch');
+				$('#statusFooter').html('Disconnected from Taxi Dispatch');
+				//alert('Disconnected from Taxi Dispatch');
+		
+		//}catch (error){			
+				//console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);	
+				//$('#statusFooter').html('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
+		//}
+		});
+	
+		function sendWaitTime(){
+	
+			socket.emit('waitTime', {'waitTime' : $('#waitTime').val(), 'id': orderId});
+			console.log('Wait time sent to OrderId: ' + orderId);
+			$('#statusFooter').html('Wait time sent.');
+			
+			if($('#' + orderId).length){
+				$('#' + orderId + ' .status').html('Dispatched').css('background-color', 'green').css('color', 'white');						
+			}	
+	
+		}
+		
+		function openWaitTime(){
+			//alert('gotHere');
+			$('#popupMenu').popup("close");
+			setTimeout(function () {
+				$("#waitTimeDiv").popup("open")
+			}, 100);	
+		}
+		
+		function cancelOrder(){
+			//alert('gotHere');
+			$('#popupMenu').popup("close");
+			setTimeout(function () {
+				$("#cancelConfirm").popup("open")
+			}, 100);	
 		}
 	
 	</script>
@@ -147,7 +194,7 @@
 				  <thead>
 					<tr>
 					<th style="text-align: center;" class="label" data-priority="6">
-						ID
+						#
 					  </th>
 					  <th style="text-align: center;" class="label" data-priority="5">
 						Name
@@ -167,16 +214,38 @@
 					</tr>
 				  </thead>
 				  <tbody id="orders">
-					
+					<tr id="noOrders">
+						<td colspan="6" style="text-align: center;">There are currently no jobs available</td>
+					</tr>
 				  </tbody>
 				</table>
-				<!-- Popups for lightbox images -->
+				
+				<!-- Popups for Wait time -->
 				<div id="waitTimeDiv" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
 					<label for="waitTime"><h2>Wait time in minutes?</h2></label>
 					<input type="range" name="waitTime" id="waitTime" value="30" min="0" max="120" data-theme="b" />
 					<br />
-					<a href="#" data-rel="back"><button style="background-color: green; color: white;" onclick="sendWaitTime($('#waitTime').val());" ><strong>Accept</strong></button></a>
-					<a href="#" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" onclick="sendWaitTime();" ><strong>Accept</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
+				</div>
+				
+				<!-- menu options //-->
+				<div data-role="popup" id="popupMenu" data-theme="b">
+				        <ul data-role="listview" data-inset="true" style="min-width:210px;">
+				            <li data-role="list-divider">Choose an action</li>
+				            <li><a href="#" onclick="openWaitTime();">Send Wait Time</a></li>
+				            <li><a href="#">Send Status Update Notification</a></li>
+				            <li><a href="#">Taxi Menu Option</a></li>
+				            <li><a href style="background-color: red; color: white;" onclick="cancelOrder();">Cancel Order</a></li>
+				        </ul>
+				</div>
+				
+				<!-- Cancel -->
+				<div id="cancelConfirm" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
+					<label><h2>Are you sure you want to cancel?</h2></label>
+					<br />
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" id="cancelConfirmButton"><strong>Accept</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
 				</div>
 
 			</div>
