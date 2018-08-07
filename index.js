@@ -39,6 +39,11 @@ socket.sockets.on('connection', function (socket) {
 		  socket.broadcast.emit('waitTime', data);
 		});
 		
+		socket.on('arrivalNotification', function(data){
+		  console.log('Sending Arrival Notification: ' + data);
+		  socket.broadcast.emit('arrivalNotification', data);
+		});
+		
 		socket.on('cancel', function(data){
 		  console.log('Cancel Request Received: ' + data);
 		  socket.broadcast.emit('cancel', data);
