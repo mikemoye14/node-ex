@@ -122,6 +122,12 @@
 			}	
 	
 		}
+
+		function sendArrivalNotification(){
+			
+			socket.emit('arrivalNotification', orderId);
+		
+		}
 		
 		function openWaitTime(){
 			//alert('gotHere');
@@ -234,7 +240,7 @@
 				        <ul data-role="listview" data-inset="true" style="min-width:210px;">
 				            <li data-role="list-divider">Choose an action</li>
 				            <li><a href="#" onclick="openWaitTime();">Send Wait Time</a></li>
-				            <li><a href="#">Send Status Update Notification</a></li>
+				            <li><a href="#" onclick="sendArrivalNotification();">Send Status Update Notification</a></li>
 				            <li><a href="#">Taxi Menu Option</a></li>
 				            <li><a href style="background-color: red; color: white;" onclick="cancelOrder();">Cancel Order</a></li>
 				        </ul>
