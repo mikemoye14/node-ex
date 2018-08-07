@@ -226,28 +226,12 @@ console.log("ID Token: " + id_token);
 
 
 	<script type="text/javascript">
-
 	
-
 	$(document).ready(function(){
-
-		
-
-		
-
-		
-
 		var orderId; //order ID
-
 		
-
 		try{
-
-		
-
 		//generate Unique Identifier
-
-		
 
 		function uid() {
 
@@ -260,44 +244,24 @@ console.log("ID Token: " + id_token);
 		 return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
 
 		}
-
 		
-
 		//set unique Id for order
 
-		
-
-		function setUid(){
-
-		
+		function setUid(){		
 
 			orderId = uid();		
 
-			$('#uid').val(orderId);
+			$('#uid').val(orderId);			
 
-			
+			console.log('new id set: ' + orderId);	
 
-			console.log('new id set: ' + orderId);
+		}		
 
-			
+		setUid();	
 
-		}	
+			//init socket			
 
-		
-
-		setUid();
-
-	
-
-	
-
-			//init socket
-
-			
-
-			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
-
-									
+			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');									
 
 			socket.emit('init', 'New Client connected with ID: ' + orderId + ' : ' + $('#uid').val());
 
@@ -309,9 +273,7 @@ console.log("ID Token: " + id_token);
 
 			});	
 
-			//receive order acknowledgement
-
-			
+			//receive order acknowledgement			
 
 			socket.on('order',function(data){
 
@@ -319,9 +281,7 @@ console.log("ID Token: " + id_token);
 
 				$('#statusFooter').html(data);
 
-			});
-
-			
+			});			
 
 			//receive wait time
 
@@ -335,7 +295,7 @@ console.log("ID Token: " + id_token);
 
 					$('#time').show();
 					
-      //set wait time countdown
+				//set wait time countdown
 					
 				setTimer(data.waitTime);
 			
@@ -343,9 +303,7 @@ console.log("ID Token: " + id_token);
 
 				$('#statusFooter').html(data);
 
-			});
-
-			
+			});			
 
 			//receive order cancellation acknowledgement
 
@@ -357,17 +315,11 @@ console.log("ID Token: " + id_token);
 
 					setUid();
 
-				}
+				}				
 
-				
+			});			
 
-			});
-
-			
-
-			//socket disconnect
-
-			
+			//socket disconnect			
 
 			socket.on("disconnected", function () {
 
@@ -379,12 +331,9 @@ console.log("ID Token: " + id_token);
 
 			});
 
-			//send order
+			//send order			
 
-			
-
-			$('#send').click(function() {			
-
+			$('#send').click(function() {	
 			
 
 				socket.emit('order', JSON.parse(JSON.stringify($('#taxiOrderForm').serialize()))); //send order data from form
@@ -444,6 +393,8 @@ console.log("ID Token: " + id_token);
 			clearInterval(timer);
 			
 			WebPayInterface.notification('Taxi Status', 'Your Taxi Has Arrived'); //send mobile app notification when wait time expires
+			
+			$('#time').html('<h1>Your taxi is arriving soon!');
 		
 		 } 
 		
