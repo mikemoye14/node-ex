@@ -1,3 +1,6 @@
+//load environment variables
+require('dotenv').config();
+
 // Setup basic express server
 var express = require('express');
 var app = express();
