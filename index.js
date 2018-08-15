@@ -9,7 +9,7 @@ var server = require('http').createServer(app);
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
-mongoose.connect(prcess.env.DB_URL);
+mongoose.connect(process.env.DB_URL);
 
 mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
