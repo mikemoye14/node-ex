@@ -3,7 +3,10 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var server = require('http').createServer(app);
+var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
+
+mongoose.connect('mongodb://<user>:<passowrd>@ds119692.mlab.com:19692/white-rose-taxi');
 
 mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
