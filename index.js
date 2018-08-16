@@ -34,7 +34,7 @@ var orderSchema = new Schema({
 var order = mongoose.model('orders', orderSchema);
 
 //create dummy data in db
-var order.create({
+order.create({
             orderId : '12345',
             name : 'test',
             phone : 7175555555,
