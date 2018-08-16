@@ -13,17 +13,17 @@ var port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, 'app')));
 
 mongoose.connect(
-	'mongodb://mlit:whiterose2018@ds119692.mlab.com:19692/white-rose-taxi', () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
-).then(function (err){
-	if (err){
+	process.env.DB_URI, { useNewUrlParser: true }, () => {console.log('Connecting to DB at: ' + process.env.DB_URI)}
+).then(
+	() => { console.log('Connected to DB') },
+  	err => { /** handle initial connection error */ 
 		
 		console.log('An Error occurred:\n\n');
 		Object.keys(err).forEach(function (key) {
-		console.log(err[key]);
-			});
-		}
-	else console.log('Connected to DB');
-});
+			console.log(err[key]);
+		});
+	}
+);
 
 //create order schema
 var Schema = mongoose.Schema;
