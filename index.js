@@ -12,7 +12,9 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, 'app')));
 
-var db = mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
+mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
+var db = mongoose.connection();
+
 db.on('error', function (err){
 	console.log('err');
 });
