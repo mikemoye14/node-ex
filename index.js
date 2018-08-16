@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'app')));
 mongoose.connect(
 	process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
 ).then(function (err){
-	if (err) console.log('An Error occurred:\n\n' + err.message);
+	if (err) console.log('An Error occurred:\n\n' + err[0]);
 	else console.log('Connected to DB');
 });
 
