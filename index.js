@@ -10,7 +10,15 @@ var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
 // Routing
-app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname, './')))
+
+//console.log(order.find());
+
+server.listen(port, () => {
+  console.log('Server listening at port %d', port);
+}).on('connection', function(socket){
+    //console.log('Connection established from: ' + socket.address().address + ' : ' + socket.address().port + ' - version: ' + socket.address().family);
+})
 
 mongoose.connect(
 	process.env.DB_URI, { useNewUrlParser: true }, () => {console.log('Connecting to DB at: ' + process.env.DB_URI)}
@@ -24,43 +32,6 @@ mongoose.connect(
 		});
 	}
 );
-
-//create order schema
-var Schema = mongoose.Schema;
- 
-var orderSchema = new Schema({
-    "orderId" : String,
-    "name" : String,
-    "phone" : String,
-    "pickup" : String,
-    "destination" : String,
-    "status" : String,
-    "time" : Date
-});
-
-var order = mongoose.model('orders', orderSchema);
-
-//create dummy data in db
-order.create({
-            orderId : '12345',
-            name : 'test',
-            phone : 7175555555,
-            pickup : 'test',
-            destination : 'test',
-            status : 'Waiting',
-            time : Date.now(),
-}, function (err, orderId){
-	if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
-	else console.log('Saved order: ' + orderId);
-});
-
-//console.log(order.find());
-
-server.listen(port, () => {
-  console.log('Server listening at port %d', port);
-}).on('connection', function(socket){
-    //console.log('Connection established from: ' + socket.address().address + ' : ' + socket.address().port + ' - version: ' + socket.address().family);
-});
 
 var socket = require('socket.io')(server);
 
