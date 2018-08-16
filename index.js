@@ -13,7 +13,10 @@ var port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, 'app')));
 
 var db = mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
-
+db.on('error', function (err){
+	console.log('err');
+});
+      
 require('models/orders.js');
 var order = mongoose.model('orders', orderSchema);
 
