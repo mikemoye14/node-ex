@@ -15,7 +15,13 @@ app.use(express.static(path.join(__dirname, 'app')));
 mongoose.connect(
 	'mongodb://mlit:whiterose2018@ds119692.mlab.com:19692/white-rose-taxi', () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
 ).then(function (err){
-	if (err) console.log('An Error occurred:\n\n' + err);
+	if (err){
+		
+		console.log('An Error occurred:\n\n');
+		Object.keys(err).forEach(function (key) {
+		console.log(err[key]);
+			});
+		}
 	else console.log('Connected to DB');
 });
 
