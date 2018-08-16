@@ -9,7 +9,7 @@ var server = require('http').createServer(app);
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
-mongoose.connect(process.env.DB_URL, () => {console.log('Connected to DB at: %s', process.env.DB_URL));
+mongoose.connect(process.env.DB_URL, () => {console.log('Connected to DB at: %s', process.env.DB_URL)});
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
