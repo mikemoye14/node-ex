@@ -22,16 +22,42 @@ server.listen(port, () => {
 
 mongoose.connect(
 	process.env.DB_URI, { useNewUrlParser: true }, () => {console.log('Connecting to DB at: ' + process.env.DB_URI)}
-).then(
-	() => { console.log('Connected to DB') },
-  	err => { /** handle initial connection error */ 
-		
-		console.log('An Error occurred:\n\n');
-		Object.keys(err).forEach(function (key) {
-			console.log(err[key]);
-		});
-	}
-);
+)
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('Connected to DB')
+});
+
+//create order schema
+var Schema = mongoose.Schema;
+ 
+var orderSchema = new Schema({
+    "orderId" : String,
+    "name" : String,
+    "phone" : String,
+    "pickup" : String,
+    "destination" : String,
+    "status" : String,
+    "time" : Date
+});
+
+var order = mongoose.model('orders', orderSchema);
+
+//create dummy data in db
+order.create({
+            orderId : '12345',
+            name : 'test',
+            phone : 7175555555,
+            pickup : 'test',
+            destination : 'test',
+            status : 'Waiting',
+            time : Date.now(),
+}, function (err, orderId){
+	if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
+	else console.log('Saved order: ' + orderId);
+});
 
 var socket = require('socket.io')(server);
 
