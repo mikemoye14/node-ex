@@ -9,6 +9,9 @@ var server = require('http').createServer(app);
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
+// Routing
+app.use(express.static(path.join(__dirname, 'app')));
+
 mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
 
 var order = mongoose.model('order', orderSchema);
@@ -18,9 +21,6 @@ server.listen(port, () => {
 }).on('connection', function(socket){
     //console.log('Connection established from: ' + socket.address().address + ' : ' + socket.address().port + ' - version: ' + socket.address().family);
 });
-
-// Routing
-app.use(express.static(path.join(__dirname, 'public')));
 
 var socket = require('socket.io')(server);
 
