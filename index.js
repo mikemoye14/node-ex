@@ -42,7 +42,7 @@ order.create({
             destination : 'test',
             status : 'Waiting',
             time : Date.now(),
-},(function (err, orderId){
+}, function (err, orderId){
 	if (err) console.log('error while trying to save order: ' + orderId);
 	console.log('Saved order: ' + orderId);
 });
