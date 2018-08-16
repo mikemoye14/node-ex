@@ -59,6 +59,8 @@ order.create({
 	else console.log('Saved order: ' + orderId);
 });
 
+console.log(order.find());
+
 var socket = require('socket.io')(server);
 
 var dispatch = socket.of('/dispatch');
@@ -80,9 +82,6 @@ socket.sockets.on('connection', function (socket) {
                 console.log('New Order: ' + data);
                 socket.emit('order', 'Order Received');
 				dispatch.emit('order', data);
-		
-		
-		
         });
 		
 		socket.on('waitTime', function(data){
