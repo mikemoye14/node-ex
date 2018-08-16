@@ -31,10 +31,10 @@ var orderSchema = new Schema({
     "time" : Date
 });
 
-var order = mongoose.model('orders', orderSchema);
+var orderModel = mongoose.model('orders', orderSchema);
 
 //create dummy data in db
-order.create({
+var order = new orderModel({
             orderId : '12345'
             name : 'test',
             phone : 7175555555,
@@ -42,7 +42,9 @@ order.create({
             destination : 'test',
             status : 'Waiting',
             time : Date.now(),
-}, function (err, orderId){
+});
+
+order.save(function (err){
 	if (err) console.log('error while trying to save order: ' + orderId);
 	console.log('Saved order: ' + orderId);
 });
