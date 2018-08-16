@@ -18,10 +18,11 @@ mongoose.connect(
 	console.log(err);
 });;
 
+//create order schema
 var Schema = mongoose.Schema;
  
 var orderSchema = new Schema({
-    "id" : String,
+    "orderId" : String,
     "name" : String,
     "phone" : String,
     "pickup" : String,
@@ -31,6 +32,20 @@ var orderSchema = new Schema({
 });
 
 var order = mongoose.model('orders', orderSchema);
+
+//create dummy data in db
+var order.create({
+            orderId : '12345'
+            name : 'test',
+            phone : 7175555555,
+            pickup : 'test',
+            destination : 'test',
+            status : 'Waiting',
+            time : Date.now(),
+}, function (err, orderId){
+	if (err) console.log('error while trying to save order: ' + orderId);
+	console.log('Saved order: ' + orderId);
+});
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
@@ -47,15 +62,21 @@ dispatch.on('init', function(data){
 
 socket.sockets.on('connection', function (socket) {
 		
-		socket.on('init', function (data) {
-                socket.emit('init', 'Connected to Dispatch');
-				console.log(data);
-        });
+	socket.on('init', function (data) {
+
+		var orderData = order.find();
+
+		socket.emit('init', orderData);
+			console.log(data);
+	});
 
         socket.on('order', function (data) {
                 console.log('New Order: ' + data);
                 socket.emit('order', 'Order Received');
 				dispatch.emit('order', data);
+		
+		
+		
         });
 		
 		socket.on('waitTime', function(data){
