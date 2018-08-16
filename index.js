@@ -59,7 +59,7 @@ order.create({
 	else console.log('Saved order: ' + orderId);
 });
 
-//console.log(order.find());
+console.log(order.find({}));
 
 var socket = require('socket.io')(server);
 
