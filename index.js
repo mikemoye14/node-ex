@@ -17,9 +17,8 @@ var db = mongoose.connect(
 ).then(function (err){
 	console.log(err);
 });;
-      
-require('models/orders.js');
-var order = mongoose.model('orders', orderSchema);
+
+var order = db.model('orders', orderSchema);
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
