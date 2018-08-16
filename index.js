@@ -15,8 +15,8 @@ app.use(express.static(path.join(__dirname, 'app')));
 mongoose.connect(
 	process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
 ).then(function (err){
-	console.log(err);
-});;
+	console.log('An Error occurred:\n\n' + err);
+});
 
 //create order schema
 var Schema = mongoose.Schema;
@@ -44,7 +44,7 @@ order.create({
             time : Date.now(),
 }, function (err, orderId){
 	if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
-	console.log('Saved order: ' + orderId);
+	else console.log('Saved order: ' + orderId);
 });
 
 server.listen(port, () => {
