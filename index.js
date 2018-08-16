@@ -12,7 +12,7 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, 'app')));
 
-var db = mongoose.connect(
+mongoose.connect(
 	process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
 ).then(function (err){
 	console.log(err);
@@ -30,7 +30,7 @@ var orderSchema = new Schema({
     "time" : Date
 });
 
-var order = db.model('orders', orderSchema);
+var order = mongoose.model('orders', orderSchema);
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
