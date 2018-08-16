@@ -12,7 +12,8 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, 'app')));
 
-mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
+var db = mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
+
 require('models/orders.js');
 var order = mongoose.model('orders', orderSchema);
 
