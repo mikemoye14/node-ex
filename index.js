@@ -10,9 +10,7 @@ var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
 // Routing
-app.use(express.static(path.join(__dirname, 'app')));
-
-
+app.use(express.static(path.join(__dirname, '/')));
 
 mongoose.connect(
 	process.env.DB_URI, { useNewUrlParser: true }, () => {console.log('Connecting to DB at: ' + process.env.DB_URI)}
@@ -55,6 +53,8 @@ order.create({
 	if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
 	else console.log('Saved order: ' + orderId);
 });
+
+console.log(order.find());
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
