@@ -9,7 +9,7 @@ var server = require('http').createServer(app);
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
-mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI, process.env.DB_URL)}, { useNewUrlParser: true });
+mongoose.connect(process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true });
 
 var order = mongoose.model('order', orderSchema);
 
