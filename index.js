@@ -59,7 +59,12 @@ order.create({
 	else console.log('Saved order: ' + orderId);
 });
 
-console.log(order.collection.find());
+order.find({}, function(err, orders) {
+  if (err) throw err;
+
+  // object of all the users
+  console.log(orders);
+});
 
 var socket = require('socket.io')(server);
 
