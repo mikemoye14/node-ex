@@ -54,7 +54,7 @@ order.create({
 	else console.log('Saved order: ' + orderId);
 });
 
-console.log(order.find());
+//console.log(order.find());
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
