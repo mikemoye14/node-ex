@@ -13,9 +13,9 @@ var port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, 'app')));
 
 mongoose.connect(
-	process.env.DB_URI, () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
+	'mongodb://mlit:whiterose2018@ds119692.mlab.com:19692/white-rose-taxi', () => {console.log('Connected to DB at: ' + process.env.DB_URI)}, { useNewUrlParser: true }
 ).then(function (err){
-	if (err) console.log('An Error occurred:\n\n' + err[0]);
+	if (err) console.log('An Error occurred:\n\n' + err);
 	else console.log('Connected to DB');
 });
 
