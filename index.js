@@ -12,6 +12,8 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, 'app')));
 
+
+
 mongoose.connect(
 	process.env.DB_URI, { useNewUrlParser: true }, () => {console.log('Connecting to DB at: ' + process.env.DB_URI)}
 ).then(
@@ -71,9 +73,9 @@ socket.sockets.on('connection', function (socket) {
 		
 	socket.on('init', function (data) {
 
-		var orderData = order.find();
+		//var orderData = order.find();
 
-		socket.emit('init', orderData);
+		socket.emit('init', data);
 			console.log(data);
 	});
 
