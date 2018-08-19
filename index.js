@@ -45,6 +45,7 @@ var orderSchema = new Schema({
 
 var order = mongoose.model('orders', orderSchema);
 
+/*
 //create dummy data in db
 order.create({
             orderId : '12345',
@@ -62,9 +63,10 @@ order.create({
 order.find({}, function(err, orders) {
   if (err) throw err;
 
-  // object of all the users
+  // object of all the orders
   console.log(orders);
 });
+*/
 
 var socket = require('socket.io')(server);
 
@@ -84,6 +86,22 @@ socket.sockets.on('connection', function (socket) {
 	});
 
         socket.on('order', function (data) {
+		
+		order.create({
+					
+				orderId : 		data.orderId,
+				name : 			data.name,
+				phone : 		data.phone,
+				pickup : 		data.pickup,
+				destination :	data.destination,
+				status : 		'Waiting',
+				time : 			Date.now(),
+
+		}, function (err, orderId){
+			if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
+			else console.log('Saved order: ' + orderId);
+		});
+		
                 console.log('New Order: ' + data);
                 socket.emit('order', 'Order Received');
 				dispatch.emit('order', data);
