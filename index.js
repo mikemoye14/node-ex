@@ -12,18 +12,17 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, './')))
 
-//console.log(order.find());
-
+//init socket server
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
-}).on('connection', function(socket){
-    //console.log('Connection established from: ' + socket.address().address + ' : ' + socket.address().port + ' - version: ' + socket.address().family);
-})
+});
 
+//connect to DB
 mongoose.connect(
 	process.env.DB_URI, { useNewUrlParser: true }, () => {console.log('Connecting to DB at: ' + process.env.DB_URI)}
-)
+);
 
+init DB
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -43,6 +42,7 @@ var orderSchema = new Schema({
     "time" : Date
 });
 
+//init order model
 var order = mongoose.model('orders', orderSchema);
 
 /*
@@ -68,18 +68,28 @@ order.find({}, function(err, orders) {
 });
 */
 
+//init socket
 var socket = require('socket.io')(server);
 
+//create dispatch socket channel
 var dispatch = socket.of('/dispatch');
+
 dispatch.on('init', function(data){
+
+order.find({}, function(err, orders) {
+  if (err) throw err;
+
+  // object of all the orders
+	console.log(orders);
+	dispatch.emit(orders);
+});
+	
   console.log(data);
 });
 
 socket.sockets.on('connection', function (socket) {
 		
 	socket.on('init', function (data) {
-
-		//var orderData = order.find();
 
 		socket.emit('init', data);
 			console.log(data);
