@@ -75,6 +75,8 @@ var socket = require('socket.io')(server);
 var dispatch = socket.of('/dispatch');
 
 socket.on('dispatch', function(data){
+	
+	console.log('Connection established from Dispatch: ' + data);
 
 order.find({}, function(err, orders) {
   if (err) throw err;
