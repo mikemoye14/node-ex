@@ -74,7 +74,7 @@ var socket = require('socket.io')(server);
 //create dispatch socket channel
 var dispatch = socket.of('/dispatch');
 
-dispatch.on('init', function(data){
+dispatch.on('start', function(data){
 
 order.find({}, function(err, orders) {
   if (err) throw err;
@@ -89,9 +89,9 @@ order.find({}, function(err, orders) {
 
 socket.sockets.on('connection', function (socket) {
 		
-	socket.on('init', function (data) {
+	socket.on('start', function (data) {
 
-		socket.emit('init', data);
+		socket.emit('start', data);
 			console.log(data);
 	});
 
