@@ -74,14 +74,14 @@ var socket = require('socket.io')(server);
 //create dispatch socket channel
 var dispatch = socket.of('/dispatch');
 
-dispatch.on('start', function(data){
+socket.on('dispatch', function(data){
 
 order.find({}, function(err, orders) {
   if (err) throw err;
 
   // object of all the orders
 	console.log(orders);
-	dispatch.emit(orders);
+	dispatch.emit(id, orders);
 });
 	
   console.log(data);
