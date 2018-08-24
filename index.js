@@ -59,6 +59,7 @@ order.create({
 	if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
 	else console.log('Saved order: ' + orderId);
 });
+*/
 
 order.find({}, function(err, orders) {
   if (err) throw err;
@@ -66,7 +67,6 @@ order.find({}, function(err, orders) {
   // object of all the orders
   console.log(orders);
 });
-*/
 
 //init socket
 var socket = require('socket.io')(server);
