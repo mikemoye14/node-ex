@@ -75,7 +75,7 @@ var socket = require('socket.io')(server);
 //create dispatch socket channel
 var dispatch = socket.of('/dispatch');
 
-socket.on('dispatch', function(id){
+socket.on('initDispatch', function(id){
 	
 	console.log('Connection established from Dispatch: ' + id);
 
