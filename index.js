@@ -59,7 +59,7 @@ order.create({
 	if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
 	else console.log('Saved order: ' + orderId);
 });
-*/
+
 
 order.find({}, function(err, orders) {
   if (err) throw err;
@@ -67,6 +67,7 @@ order.find({}, function(err, orders) {
   // object of all the orders
   console.log(orders);
 });
+*/
 
 //init socket
 var socket = require('socket.io')(server);
@@ -74,19 +75,19 @@ var socket = require('socket.io')(server);
 //create dispatch socket channel
 var dispatch = socket.of('/dispatch');
 
-socket.on('dispatch', function(data){
+socket.on('dispatch', function(id){
 	
-	console.log('Connection established from Dispatch: ' + data);
+	console.log('Connection established from Dispatch: ' + id);
 
-order.find({}, function(err, orders) {
-  if (err) throw err;
+	orders = order.find({}, function(err, orders) {
+			  if (err) throw err;
 
-  // object of all the orders
-	console.log(orders);
-	dispatch.emit(id, orders);
-});
+			  // object of all the orders
+				console.log(orders);
+				dispatch.emit('start', id, orders);
+			});
 	
-  console.log(data);
+  //console.log(data);
 });
 
 socket.sockets.on('connection', function (socket) {
