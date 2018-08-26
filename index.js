@@ -86,14 +86,23 @@ socket.sockets.on('connection', function (socket) {
 	socket.on('initDispatch', function(id){
 	
 	console.log('Connection established from Dispatch: ' + id);
-
-	orders = order.find({}, function(err, orders) {
+		
+		
+	orders = order.find({}).where('status').gt('Waiting').exec(function(err, orders) {
 			  if (err) throw err;
 
 			  // object of all the orders
 				console.log(orders);
 				dispatch.emit('start', orders);
 			});
+			
+	//orders = order.find({}, function(err, orders) {
+	//		  if (err) throw err;
+	//
+	//		  // object of all the orders
+	//			console.log(orders);
+	//			dispatch.emit('start', orders);
+	//		});
 	
   //console.log(data);
 });
@@ -106,9 +115,9 @@ socket.sockets.on('connection', function (socket) {
 				name : 			data.name,
 				phone : 		data.phone,
 				pickup : 		data.pickup,
-				destination :	data.destination,
+				destination :		data.destination,
 				status : 		'Waiting',
-				time : 			Date.now(),
+				time : 			data.orderTime,
 
 		}, function (err, orderId){
 			if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
