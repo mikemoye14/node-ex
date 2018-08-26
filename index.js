@@ -84,7 +84,7 @@ socket.on('initDispatch', function(id){
 
 			  // object of all the orders
 				console.log(orders);
-				dispatch.emit('start', { 'id': id, orders);
+				dispatch.emit('start', { 'id': id, orders});
 			});
 	
   //console.log(data);
