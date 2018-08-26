@@ -92,7 +92,7 @@ socket.sockets.on('connection', function (socket) {
 
 			  // object of all the orders
 				console.log(orders);
-				dispatch.emit('start', { 'id': id, orders});
+				dispatch.emit('start', orders);
 			});
 	
   //console.log(data);
