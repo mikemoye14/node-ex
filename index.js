@@ -75,7 +75,15 @@ var socket = require('socket.io')(server);
 //create dispatch socket channel
 var dispatch = socket.of('/dispatch');
 
-socket.on('initDispatch', function(id){
+socket.sockets.on('connection', function (socket) {
+		
+	socket.on('start', function (data) {
+
+		socket.emit('start', data);
+			console.log(data);
+	});
+	
+	socket.on('initDispatch', function(id){
 	
 	console.log('Connection established from Dispatch: ' + id);
 
@@ -89,14 +97,6 @@ socket.on('initDispatch', function(id){
 	
   //console.log(data);
 });
-
-socket.sockets.on('connection', function (socket) {
-		
-	socket.on('start', function (data) {
-
-		socket.emit('start', data);
-			console.log(data);
-	});
 
         socket.on('order', function (data) {
 		
