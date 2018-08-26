@@ -143,7 +143,8 @@ socket.sockets.on('connection', function (socket) {
 		  console.log('Cancel Request Received: ' + id);
 			
 			order.updateOne({orderId: id}, {$set: { status: "Cancelled" }}, function(err, res) {
-    			if (err) throw err;
+    				if (err) throw err;				
+			});	
 			 
 			
 		  socket.broadcast.emit('cancel', id);
