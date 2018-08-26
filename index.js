@@ -139,10 +139,15 @@ socket.sockets.on('connection', function (socket) {
 		  socket.broadcast.emit('arrivalNotification', data);
 		});
 		
-		socket.on('cancel', function(data){
-		  console.log('Cancel Request Received: ' + data);
-		  socket.broadcast.emit('cancel', data);
-		  dispatch.emit('cancel', data);
+		socket.on('cancel', function(id){
+		  console.log('Cancel Request Received: ' + id);
+			
+			order.updateOne({orderId: id}, {$set: { status: "Cancelled" }}, function(err, res) {
+    			if (err) throw err;
+			 
+			
+		  socket.broadcast.emit('cancel', id);
+		  dispatch.emit('cancel', id);
 		});
 
         socket.on("disconnected", function () {
