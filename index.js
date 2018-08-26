@@ -39,7 +39,7 @@ var orderSchema = new Schema({
     "pickup" : String,
     "destination" : String,
     "status" : String,
-    "time" : Date
+    "time" : String
 });
 
 //init order model
