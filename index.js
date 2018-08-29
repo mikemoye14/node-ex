@@ -131,12 +131,18 @@ socket.sockets.on('connection', function (socket) {
 		
 		socket.on('waitTime', function(data){
 		  console.log(data);
+			order.updateOne({orderId: data.id}, {$set: { status: "Dispatched: " }}, function(err, res) {
+    				if (err) throw err;				
+			});
 		  socket.broadcast.emit('waitTime', data);
 		});
 		
-		socket.on('arrivalNotification', function(data){
-		  console.log('Sending Arrival Notification: ' + data);
-		  socket.broadcast.emit('arrivalNotification', data);
+		socket.on('arrivalNotification', function(id){
+		  console.log('Sending Arrival Notification: ' + id);
+		  socket.broadcast.emit('arrivalNotification', id);
+			order.updateOne({orderId: id}, {$set: { status: "Complete" }}, function(err, res) {
+    				if (err) throw err;				
+			});
 		});
 		
 		socket.on('cancel', function(id){
