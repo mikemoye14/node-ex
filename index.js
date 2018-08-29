@@ -144,9 +144,9 @@ socket.sockets.on('connection', function (socket) {
     				if (err) throw err;				
 			});
 		});
-		
-		socket.on('cancel', function(id){
-		  console.log('Cancel Request Received: ' + id);
+	
+	socket.on('dispatchCancel', function(id){
+		  console.log('Dispatch Cancel Request Received for: ' + id);
 			
 			order.updateOne({orderId: id}, {$set: { status: "Cancelled" }}, function(err, res) {
     				if (err) throw err;				
@@ -154,6 +154,14 @@ socket.sockets.on('connection', function (socket) {
 			 
 			
 		  socket.broadcast.emit('cancel', id);
+		});
+		
+		socket.on('custCancel', function(id){
+		  console.log('Cancel Request Received: ' + id);
+			
+			order.updateOne({orderId: id}, {$set: { status: "Cancelled" }}, function(err, res) {
+    				if (err) throw err;				
+			});	
 		  dispatch.emit('cancel', id);
 		});
 
