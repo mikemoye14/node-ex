@@ -88,7 +88,7 @@ socket.sockets.on('connection', function (socket) {
 	console.log('Connection established from Dispatch: ' + id);
 		
 		
-	orders = order.find({status: 'Waiting'}, function(err, orders) {
+	orders = order.find({status: 'Waiting', status: 'Dispatched'}, function(err, orders) {
 			  if (err) throw err;
 
 			  // object of all the orders
