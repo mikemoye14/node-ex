@@ -39,7 +39,7 @@ var orderSchema = new Schema({
     "pickup" : String,
     "destination" : String,
     "status" : String,
-    "time" : String
+    "orderTime" : String
 });
 
 //init order model
@@ -117,7 +117,7 @@ socket.sockets.on('connection', function (socket) {
 				pickup : 		data.pickup,
 				destination :		data.destination,
 				status : 		'Waiting',
-				time : 			data.orderTime,
+				orderTime : 		data.orderTime,
 
 		}, function (err, orderId){
 			if (err) console.log(err + '\n\nerror while trying to save order: ' + orderId);
@@ -131,7 +131,7 @@ socket.sockets.on('connection', function (socket) {
 		
 		socket.on('waitTime', function(data){
 		  console.log(data);
-			order.updateOne({orderId: data.id}, {$set: { status: "Dispatched: " }}, function(err, res) {
+			order.updateOne({orderId: data.id}, {$set: { status: "Dispatched" }}, function(err, res) {
     				if (err) throw err;				
 			});
 		  socket.broadcast.emit('waitTime', data);
