@@ -12,6 +12,10 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, './')))
 
+app.get('/taxi', function (req, res) {
+  res.send('hello world')
+})
+
 //init socket server
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
