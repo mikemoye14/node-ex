@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
 
 // Routing
-app.use(express.static(path.join(__dirname, './views/')))
+app.use(express.static(path.join(__dirname, './')))
 
 app.get('/taxi', function (req, res) {
   res.sendFile('views/index.html');
