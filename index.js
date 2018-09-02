@@ -13,7 +13,7 @@ var port = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, './')))
 
 app.get('/taxi', function (req, res) {
-  res.render('views/index.html');
+  res.send('views/index.html');
 })
 
 //init socket server
