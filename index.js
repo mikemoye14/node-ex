@@ -96,7 +96,7 @@ socket.sockets.on('connection', function (socket) {
 			  if (err) throw err;
 
 			  // object of all the orders
-				console.log(orders);
+				console.log('sending orders to dispatch: ' + orders);
 				dispatch.emit('start', orders);
 			});
 			
@@ -129,7 +129,7 @@ socket.sockets.on('connection', function (socket) {
 		});
 		
                 console.log('New Order: ' + data);
-                socket.emit('order', 'Order Received');
+                socket.emit('order', 'Order Received by Dispatch');
 				dispatch.emit('order', data);
         });
 		
