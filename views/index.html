@@ -7,37 +7,33 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>White Rose Taxi</title>
-
+	
 	<link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/simple.min.css" />
-
 	<link rel="stylesheet" href="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/jquery.mobile.icons.min.css" />
-
 	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
-
-	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>	
-
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-
-	<meta name="google-signin-scope" content="profile email">
-
-    <meta name="google-signin-client_id" content="948345909344-tv4s24h5701sjicbeqcs9ai2beaaqof6.apps.googleusercontent.com">
-
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-
+	
 	<style>
 
 		[data-role=page]{height: 100% !important; position:relative !important;}
 
 		[data-role=footer]{bottom:0; position:fixed !important; top: auto !important; width:100%;}
-
+		
 	</style>
+	
+	<script>
+	
+	const VER = 'v1.4.2';	
+	
+	//alert(navigator.geolocation.getCurrentPosition(alert(''),alert('')));
+	
+	</script>
 
 </head>
 
 <body>
-
 	<!-- Home Page 1 //-->
 
 	<div data-role="page" id="homePage">
@@ -45,123 +41,65 @@
 		<div data-role="header">
 
 			<h1>White Rose Taxi</h1>
+			<a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="true" data-iconshadow="true">Menu</a>
 
 		</div>
 
-		<div data-role="main" class="ui-content">
+		<div style="text-align: center;" data-role="main" class="ui-content">
 
-			<div style="text-align: center;"><img style="border-radius: 10px;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" /></div>
+			<div>
+			
+			<img style="border-radius: 10px; border: 3px solid black;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" />
+			
+			<strong><p>Pa PUC No. 6317318</p></strong>
+			
+			</div>
+			
+			<a style="text-decoration: none;" href="#orderPage">
+				<button style="background-color: green; color: white; font-size: 24px;">ORDER TAXI</button> 
+			</a>
+			<br />		
 
-			<div id="my-signin2"></div>
+			<p style="font-size: 14px;">For more information please visit <a href="https://www.whiterosetaxi.com/" class="ui-link">whiterosetaxi.com</a></p>
+			<div data-role="popup" id="fareEstimatePopup" data-overlay-theme="b" data-theme="b" data-dismissible="true" class="ui-btn-right" style="max-width:400px;">
+				<div data-role="header" data-theme="a">
+				    <h1>Calculate Estimate</h1>
+				</div>
+				<div role="main" class="ui-content">
+					<h3 class="ui-title">Rates</h3>
+					<ul>
+				    	<li>$1.80 for the first 1/5th of a mile</li>
 
-  <script>
+						<li>$1.90 for each additional mile.</li>
 
-function onSuccess(googleUser) {
+						<li>$0.38 per minute wait time.</li>
 
-console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+						<li>$5.00 for each returned item.</li>
 
-}
+						<li>$1.00 for night time differential.</li>
 
-function onFailure(error) {
-
-console.log(error);
-
-}
-
-function renderButton() {
-
-gapi.signin2.render('my-signin2', {
-
-'scope': 'profile email',
-
-'width': 240,
-
-'height': 50,
-
-'longtitle': true,
-
-'theme': 'dark',
-
-'onsuccess': onSuccess,
-
-'onfailure': onFailure
-
-});
-
-}
-
-</script>
-
-    <script>
-
-function onSignIn(googleUser) {
-
-// Useful data for your client-side scripts:
-
-var profile = googleUser.getBasicProfile();
-
-console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-
-console.log('Full Name: ' + profile.getName());
-
-console.log('Given Name: ' + profile.getGivenName());
-
-console.log('Family Name: ' + profile.getFamilyName());
-
-console.log("Image URL: " + profile.getImageUrl());
-
-console.log("Email: " + profile.getEmail());
-
-// The ID token you need to pass to your backend:
-
-var id_token = googleUser.getAuthResponse().id_token;
-
-console.log("ID Token: " + id_token);
-
-};
-
-</script>
-
-			<a style="text-decoration: none;" href="#orderPage"> 
-
-				<button>ORDER TAXI</button> </a> 
-
-				<button>FARE ESTIMATE <br /><span style="font-size: 12px;">(Coming Soon)</span></button> <a style="text-decoration: none;" href="tel:717.852.7673"> <button>CONTACT US</button> </a>
-
-			<ul style="font-size: 12px;">
-
-				<li>$1.80 for the first 1/5th of a mile</li>
-
-				<li>$1.90 for each additional mile.</li>
-
-				<li>$0.38 per minute wait time.</li>
-
-				<li>$5.00 for each returned item.</li>
-
-				<li>$1.00 for night time differential.</li>
-
-				<li>We now take credit cards its a $10.00 minimum</li>
-
+						<li>We now take credit cards its a $10.00 minimum</li>
+					<ul>
+					<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OKAY</a>
+				</div>
+			</div>
+		</div>
+		
+		<div data-role="panel" id="left-panel" data-display="push" data-swipe-close="true" class="ui-responsive-panel">
+			<ul data-role="listview">
+				<li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+				<li id="fareEstimate"><a href="#">Rates</a></li>
+				<li><a style="text-decoration: none;" href="tel:717.852.7673">Contact Us</a></li>
+				<li><a href="#">About Us</a></li>
 			</ul>
-
-			<p style="font-size: 14px;">For more information please visit <a href="https://www.whiterosetaxi.com/" class="ui-link">White Rose Taxi.</a></p>
-
-			<fieldset data-role="fieldcontain" data-type="horizontal">
-
-				<legend>Cache settings:</legend>
-
-				<input type="radio" name="radio-choice-a1" id="radio-choice-a1" value="on" checked="checked" /> <label for="radio-choice-a1">On</label> <input type="radio" name="radio-choice-a1" id="radio-choice-b1" value="off" /> <label for="radio-choice-b1">Off</label>
-
-			</fieldset>
-
 		</div>
-
+	
 		<div data-role="footer" data-type="footer">
-
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
-
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
 
 	</div>
@@ -170,7 +108,7 @@ console.log("ID Token: " + id_token);
 
 	<!-- Begin Order Page 2//-->
 
-	<div data-role="page" id="orderPage">
+	<div data-role="page" data-transition="flip" id="orderPage">
 
 		<div data-role="header">
 
@@ -179,297 +117,562 @@ console.log("ID Token: " + id_token);
 		</div>
 
 		<div data-role="main" class="ui-content">
+		
+			<div id="map"></div>
 
 			<form class="ui-field-contain" name="taxiOrderForm" id="taxiOrderForm">
-
-				<fieldset>
-
-					<label for="name">Name:</label>
-
-					<input type="text" name="name" id="name" value="" /> 
-
-					<label for="phone">Phone:</label>
-
+				<div>
+					<label for="name"><strong>Name:</strong></label>
+					<span id="invalidName" style="color: red; display: none; font-size: 10pt;">Name must be filled out.</span>					
+					<input type="text" name="name" id="name" value="" placeholder="Required" required=""/>
+				
+					<label for="phone"><strong>Phone:</strong></label>
+					<span id="invalidPhone" style="color: red; display: none; font-size: 10pt;">Please enter a valid phone number.</span>
 					<input type="tel" name="phone" id="phone" value="" placeholder="Required" required="" />
-
-					<label for="pickup">Pickup:</label>
-
+					
+					<label for="pickup"><strong>Pickup:</strong></label>
+					<span id="invalidPickup" style="color: red; display: none; font-size: 10pt;">Please enter a valid pickup location.</span>
 					<input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" />
-
-					<label for="destination">Destination:</label>
-
+					
+					<label for="destination"><strong>Destination:</strong></label>
+					<span id="invalidDestination" style="color: red; display: none; font-size: 10pt;">Please enter a valid destination.</span>
 					<input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" />
-
-					<label for="info">Additional Information (Optional):</label>
-
-					<textarea name="info" type="textarea" cols="75" rows="5" id="info" placeholder="What else should we know?"></textarea>
-
-					<input type="hidden" name="uid" id="uid" value="" />
-
-				</fieldset>
-
+			
+					<label for="passengers"><strong>Number of Passengers?</strong></label>
+					<input type="range" name="passengers" id="passengers" value="1" min="1" max="8" data-theme="b" />	
+					
+					<label for="info"><strong>Special Instructions (Optional):</strong></label>
+					<textarea name="info" type="textarea" cols="75" rows="4" id="info" placeholder="What else should we know?"></textarea>
+					
+					<input type="hidden" name="orderId" id="uid" value="" />
+					<input type="hidden" name="orderTime" id="orderTime" value="" />
+					<p>
+					<a style="text-decoration: none;" href="#waitPage">
+						<button  style="background-color: green; color: white; font-size: 18px;" id="send" class="ui-shadow ui-btn ui-corner-all" type="submit" onclick="event.preventDefault();">SEND</button>
+					</a>
+					</p>
+				</div>
 			</form>
 
-			<a style="text-decoration: none;" href="#waitPage"><button id="send" class="ui-shadow ui-btn ui-corner-all" type="submit">SEND</button></a>
+			
 
 		</div>
 
 		<div data-role="footer" data-type="footer">
-
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
-
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
 
 	</div>
 
-
 	<script type="text/javascript">
+	/*
+	function initAutocomplete() {
+
+	 // Create the autocomplete object, restricting the search to geographical
+
+	 // location types.
+
+	autocomplete = new google.maps.places.Autocomplete(
+	*/
+	/** @type {!HTMLInputElement} *//*(document.getElementById('pickup')),
+
+	 {types: ['geocode']});
+
+	 // When the user selects an address from the dropdown, populate the address
+
+	 // fields in the form.
+
+	autocomplete.addListener('place_changed', fillInAddress);
+
+	 }
+	 
+	 function fillInAddress() {
+
+	 // Get the place details from the autocomplete object.
+
+	 var place = autocomplete.getPlace();
+
+	 }
+	*/
 	
-	$(document).ready(function(){
-		var orderId; //order ID
+	var placeSearch, autocomplete;
+      var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_1: 'short_name',
+        country: 'short_name',
+        postal_code: 'short_name'
+      };
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('pickup')),
+            {types: ['geocode']});
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+
+        for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          document.getElementById(component).disabled = false;
+        }
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+          if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+          }
+        }
+      }
+
+      // Bias the autocomplete object to the user's geographical location,
+      // as supplied by the browser's 'navigator.geolocation' object.
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      }
+$(document).ready(function(){
+
+	
+	$('.version').html( VER);
+	
+	function validateForm() {
+	
+		var x = document.forms["taxiOrderForm"]["name"].value;
+		if (x == "") {
 		
-		try{
-		//generate Unique Identifier
-
-		function uid() {
-
-		 // Math.random should be unique because of its seeding algorithm.
-
-		 // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-
-		 // after the decimal.
-
-		 return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
-
+			$('#name').css('border', 'red solid 3px');
+			
+			$('#invalidName').show();
+			
+			//alert("Name must be filled out.");
+			event.preventDefault();
+			return false;
+		}else{
+			$('#name').css('border', 'green solid 3px');		
+			$('#invalidName').hide();
 		}
 		
-		//set unique Id for order
-
-		function setUid(){		
-
-			orderId = uid();		
-
-			$('#uid').val(orderId);			
-
-			console.log('new id set: ' + orderId);	
-
-		}		
-
-		setUid();	
-
-			//init socket			
-
-			var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');									
-
-			socket.emit('init', 'New Client connected with ID: ' + orderId + ' : ' + $('#uid').val());
-
-			socket.on('init',function(data){				
-
-				console.log('Connection Established! orderId: ' + orderId + ' : ' + $('#uid').val());
-
-				$('#statusFooter').html('Connection Established!');
-
-			});	
-
-			//receive order acknowledgement			
-
-			socket.on('order',function(data){
-
-				console.log(data);
-
-				$('#statusFooter').html(data);
-
-			});			
-
-			//receive wait time
-
-			socket.on('waitTime',function(data){
-
-				console.log(data);				
-
-				if(orderId == data.id){
-
-					$('#waitingOnDispatch').hide();
-
-					$('#time').show();
-					
-				//set wait time countdown
-					
-				setTimer(data.waitTime);
+		
+		var x = document.forms["taxiOrderForm"]["phone"].value;
+		if (!x.match(/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/)) {
+		
+			$('#phone').css('border', 'red solid 3px');
 			
-				}
-
-				$('#statusFooter').html(data);
-
-			});			
-
-			//receive order cancellation acknowledgement
-
-			socket.on('cancel',function(data) {
-
-			if(orderId == data){
-
-				console.log('Cancel Request Received');
-
-					setUid();
-
-				}				
-
-			});			
-
-			//socket disconnect			
-
-			socket.on("disconnected", function () {
-
-				console.log('Disconnected from Taxi Dispatch');
-
-				$('#statusFooter').html('Disconnected from Taxi Dispatch');
-
-				//alert('Disconnected from Taxi Dispatch');
-
-			});
-
-			//send order			
-
-			$('#send').click(function() {	
+			$('#invalidPhone').show();
 			
-
-				socket.emit('order', JSON.parse(JSON.stringify($('#taxiOrderForm').serialize()))); //send order data from form
-
-				console.log('Order Sent');
-
-				$('#statusFooter').html('Order Sent');				
-
-			
-
-			//send ajax request to google script to send email of order and record order in spread sheet
-
-			
-
-			$.ajax({
-
-				url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
-
-				type: "GET",
-
-				data: $('#taxiOrderForm').serialize(),
-
-				success: function (data) {
-
-				
-
-					//alert(data);
-
-				
-
-				},
-
-				error: function (jXHR, textStatus, errorThrown) {
-
-					//alert(errorThrown);
-
-				}
-
-			});
-
-		});
-
-		function startTimer(duration, display) { 
-		
-		var timer, minutes, seconds;
-		timer = setInterval(function () { minutes = parseInt(duration / 60, 10); 
-		
-		seconds = parseInt(duration % 60, 10); 
-		
-		minutes = minutes < 10 ? "0" + minutes : minutes; 
-		
-		seconds = seconds < 10 ? "0" + seconds : seconds; 
-		
-		display.text(minutes + ":" + seconds); 
-		
-		if (--duration < 0) { 
-			clearInterval(timer);
-			
-			WebPayInterface.notification('Taxi Status', 'Your Taxi Has Arrived'); //send mobile app notification when wait time expires
-			
-			$('#time').html('<h1>Your taxi is arriving soon!');
-		
-		 } 
-		
-		}, 1000); 
-		
+			//alert("Please enter a valid phone number");
+			event.preventDefault();
+			return false;
+		}else{
+			$('#phone').css('border', 'green solid 3px');		
+			$('#invalidPhone').hide();
 		}
 		
+		var x = document.forms["taxiOrderForm"]["pickup"].value;
+		if (x == "") {
+		
+			$('#pickup').css('border', 'red solid 3px');
+			
+			$('#invalidPickup').show();
+			event.preventDefault();
+			return false;
+		}else{
+			$('#pickup').css('border', 'green solid 3px');		
+			$('#invalidPickup').hide();
+		}
+		
+		var x = document.forms["taxiOrderForm"]["destination"].value;
+		if (x == "") {
+		
+			$('#destination').css('border', 'red solid 3px');
+			
+			$('#invalidDestination').show();
+			event.preventDefault();
+			return false;
+		}else{
+			$('#destination').css('border', 'green solid 3px');		
+			$('#invalidDestination').hide();
+		}
 
-		//count down timer
-
-		function setTimer(mins) {
-
-				display = $('#timer');
-
-			startTimer((mins * 60), display);
-
+		var addr = document.getElementById("pickup");
+		var addr2 = document.getElementById("destination");
+		
+		var data = {
+			bounds: {
+				west: -80.0505411,	//Pittsburgh
+				east: -75.2581196,	//Philadelphia
+				south: 39.2846225,	//Baltimore
+				north: 41.4045083	//Scranton
+			}
 		};
 		
+		var bounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(data.bounds.south, data.bounds.west), 
+		new google.maps.LatLng(data.bounds.north, data.bounds.east));		
 
-			//send order cancel request
-
+		// Get geocoder instance		
+		var geocoder = new google.maps.Geocoder();
 		
-
-			$('#cancelConfirmButton').click(function(){
-
+        // Geocode the address
+        geocoder.geocode({
+						'address': addr.value,		
+						bounds: bounds,
+						componentRestrictions: {
+							country: 'US'
+						}}, function(results, status){
 			
+			alert('status: ' + status + '\n\n pickup results: \n\n' + results);
+			
+            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+				$('#pickup').css('border', 'green solid 3px');		
+				$('#invalidPickup').hide();
+                // set it to the correct, formatted address if it's valid
+                alert(addr.value = results[0].formatted_address);
 
-				$('#waitingOnDispatch').show();
+        // show an error if it's not
+            }else{
+			
+			$('#pickup').css('border', 'red solid 3px');			
+			$('#invalidPickup').show();
+			event.preventDefault();
+			return false;
+			
+			}
+			
+        });	
 
-				$('#time').hide();
+		// Geocode the address
+        geocoder.geocode({
+						'address': addr.value,		
+						bounds: bounds,
+						componentRestrictions: {
+							country: 'US'
+						}}, function(results, status){
+            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+				$('#destination').css('border', 'green solid 3px');		
+				$('#invalidDestination').hide();
+                // set it to the correct, formatted address if it's valid
+                addr2.value = results[0].formatted_address;
 
+        // show an error if it's not
+            }else{
+			
+			$('#destination').css('border', 'red solid 3px');			
+			$('#invalidDestination').show();
+			//event.preventDefault();
+			return false;
+			
+			}
+        });	
+
+
+			return true;		
+		
+	}
+		
+		
 	
+	var orderId; //order ID
+	
+	//generate Unique Identifier
 
-				socket.emit('cancel', orderId);
+	function uid() {
 
-				console.log('Cancel Request Sent from: ' + orderId);
+	 // Math.random should be unique because of its seeding algorithm.
 
-				$('#statusFooter').html('Cancel Request Sent.');
+	 // Convert it to base 36 (numbers + letters), and grab the first 9 characters
 
-				
+	 // after the decimal.
 
-				//setUid();
+	 return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
 
-				window.history.back();						
+	}
+	
+	//set unique Id for order
 
+	function setUid(){		
+
+		orderId = uid();		
+
+		$('#uid').val(orderId);		
+
+		console.log('New Order ID Set: ' + orderId);	
+		$('.statusFooter').text('New Order ID Set: ' + orderId);
+	}		
+
+	setUid();	
+
+		//init socket			
+
+	var socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
+	socket.emit('start', 'New Client connected with ID: ' + orderId + ' : ' + $('#uid').val());
+	
+	socket.on('start',function(data){				
+
+		console.log('Connection Established! orderId: ' + orderId + ' : ' + $('#uid').val());
+
+		$('.statusFooter').text('Connection Established!');
+
+	});	
+
+	//receive order acknowledgement			
+
+	socket.on('order',function(data){
+
+		console.log(data);
+
+		$('.statusFooter').text(data);
+
+	});			
+
+	//receive wait time
+
+	socket.on('waitTime',function(data){
+
+		console.log(data);				
+		$('.statusFooter').text(data);
+		
+		if(orderId == data.id){
+
+			$('#waitingOnDispatch').hide();
+
+			$('#time').show();
 			
-
-			});
-
-		
-
-		
-
-		}catch (error){			
-
-				console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
-
+			//set wait time countdown
+				
+			setTimer(data.waitTime);
+	
 		}
 
-		
+		$('.statusFooter').text(data);
 
+	});			
+
+	//receive order cancellation
+
+	socket.on('cancel',function(data) {
+
+		if(orderId == data){
+
+			console.log('Cancel Request Received');
+			
+			setUid();
+
+			$('.statusFooter').text('Cancel Request Received.');
+			
+			try{
+				WebInterface.notification('Taxi Order Cancelled', 'Your taxi order was cancelled by the dispatcher.');
+			}catch{}
+			
+			$('#dispatcherCancel').popup("open");
+			
+			$('#waitingOnDispatch').show();
+
+			$('#time').hide();
+			
+		}				
+
+	});	
+
+	socket.on('arrivalNotification', function(data){
+	
+		if(orderId == data){
+			console.log('Arrival Notification Received.');	
+			$('.statusFooter').text('Arrival Notification Received.');	
+			$('#time').show();
+			
+			$('#waitingOnDispatch').hide();
+
+			$('#time').html('<h2>Your taxi has arrived!</h2>');
+			
+			try{
+				WebInterface.notification('Taxi Status', 'Your taxi has arrived!');
+			}catch{}
+		}
+	
+	});
+
+	//socket disconnect
+	socket.on("disconnected", function () {
+
+		console.log('Disconnected from Taxi Dispatch');
+
+		$('.statusFooter').text('Disconnected from Taxi Dispatch');
+
+	});
+	
+	function QueryStringToJSON(data) {            
+		var pairs = data.split('&');
+		
+		var result = {};
+		pairs.forEach(function(pair) {
+			pair = pair.split('=');
+			result[pair[0]] = decodeURIComponent(pair[1] || '');
 		});
 
-		
+		return JSON.parse(JSON.stringify(result));
+	}
 
+	//send order
+	function formatDate(date) {
+	  var hours = date.getHours();
+	  var minutes = date.getMinutes();
+	  var ampm = hours >= 12 ? 'pm' : 'am';
+	  hours = hours % 12;
+	  hours = hours ? hours : 12; // the hour '0' should be '12'
+	  minutes = minutes < 10 ? '0'+minutes : minutes;
+	  var strTime = hours + ':' + minutes + ' ' + ampm;
+	  return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+	}			
+
+	$('#send').click(function() {
+
+	if(navigator.onLine){
+	}else{ alert('offline');
+		//document.getElementsByTagName("html")[0].innerHTML('<body><h3>NO Internet. Please check your internet connection.</h3></body>');
+	}
 	
+	
+		if(validateForm()){
+		
+			$('#orderTime').val(formatDate(new Date()));
+		
+			socket.emit('order', QueryStringToJSON(JSON.parse(JSON.stringify($('#taxiOrderForm').serialize())))); //send order data from form
+			console.log('Order Sent');
+			
+			$('#orderName').html($('#name').val());
+			$('#orderPhone').html($('#phone').val());
+			$('#orderPickup').html($('#pickup').val());
+			$('#orderDestination').html($('#destination').val());
+			$('#orderInfo').html($('#info').val());
+			$('#orderPassengers').html($('#passengers').val());
+			
+			window.location = '#waitPage';
+		}
 
+		$('.statusFooter').text('Order Sent');	
+
+		//send ajax request to google script to send email of order and record order in spread sheet
+		$.ajax({
+			url : 'https://script.google.com/macros/s/AKfycbw590PKXYP2n5AX6HZ72K_gDjW4FnL_wsIVHLAqW6ukk38YGKXR/exec',
+			type: "GET",
+			data: $('#taxiOrderForm').serialize(),
+			success: function (data) {
+			},
+			error: function (jXHR, textStatus, errorThrown) {
+			}
+		});
+	});
+
+	function startTimer(duration, display) { 
+	
+		var timer, minutes, seconds;
+		
+		timer = setInterval(function () { 
+		
+			minutes = parseInt(duration / 60, 10);
+			seconds = parseInt(duration % 60, 10); 
+			minutes = minutes < 10 ? "0" + minutes : minutes; 
+			seconds = seconds < 10 ? "0" + seconds : seconds; 
+			display.text(minutes + ":" + seconds); 
+		
+			if (--duration < 0) { 
+				clearInterval(timer);
+				try{
+				WebInterface.notification('Taxi Status', 'Your Taxi is arriving soon.'); //send mobile app notification when wait time expires
+				}catch{}
+				$('#time').html('<h2>Your taxi is arriving soon!<h2>');				
+			 } 
+		
+		}, 1000); 		
+	}
+
+	//count down timer
+	function setTimer(mins) {
+
+		display = $('#timer');
+
+		startTimer((mins * 60), display);
+
+	};		
+
+	//send order cancel request
+	$('#cancelConfirmButton').click(function(){			
+
+		$('#waitingOnDispatch').show();
+
+		$('#time').hide();	
+
+		socket.emit('custCancel', orderId);
+
+		console.log('Cancel Request Sent from: ' + orderId);
+
+		$('.statusFooter').text('Cancel Request Sent.');
+		
+		setUid();
+		
+		window.history.back();					
+
+	});	
+	
+	$( "#dispatcherCancel" ).bind({
+	popupafterclose: function(event, ui) { window.history.back(); }
+	});
+	
+	$("#dispatcherCancel").on({
+		popupbeforeposition: function () {
+			$('.ui-popup-screen').off();
+		}
+	});
+	
+	$('#fareEstimate').click(function(){
+		$( "#left-panel" ).panel( "close" );
+		$("#fareEstimatePopup").popup("open");
+	});
+		
+});	
+
+function cancelOrderWithAndroidBackButton(){
+
+	$("#cancelConfirm").popup("open");
+
+}
+		
 	</script>
-
 
 	<!-- End Order Page //-->
 
 	<!-- Begin wait Page //-->
 
-	<div data-role="page" id="waitPage">
+	<div data-role="page" data-transition="slide" id="waitPage">
 
 		<div data-role="header">
 
@@ -483,21 +686,20 @@ console.log("ID Token: " + id_token);
 
 				<img id="loader" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/ajax-loader.gif" />
 
-				<p>Waiting on response from dispatcher.</p>
+				<p>Waiting on response from dispatcher...</p>
 
 			</div>
 
 			<div id="time" style="text-align: center; display: none;">
-      <p>Your taxi is on the way!</p>
-				<h2>Wait Time:</h2>
+				<p>Your taxi is on the way!</p>
+				<h2>ETA:</h2>
 
 				<h2 id="timer"></h2>
 
 			</div>			
-
+				<br />
 				<a href="#cancelConfirm" style="text-decoration: none;" data-rel="popup" data-position-to="window"><button style="background-color: red; color: white;" id="cancelOrder">CANCEL</button></a>
-
-
+				
 				<!-- Popups for lightbox images -->
 
 				<div id="cancelConfirm" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
@@ -506,68 +708,52 @@ console.log("ID Token: " + id_token);
 
 					<br />
 
-					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" id="cancelConfirmButton"><strong>Accept</strong></button></a>
-
-					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" id="cancelConfirmButton"><strong>YES</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>NO</strong></button></a>
 
 				</div>
-
+				
+				<div data-role="popup" id="dispatcherCancel" data-overlay-theme="b" data-theme="b" data-dismissible="false" class="ui-btn-right" style="max-width:400px; text-align: center;">
+				    <div style="background-color: red; margin-top: 0px; color: white;" data-role="header" data-theme="a">
+				    <h1>Order Cancelled</h1>
+				    </div>
+				
+				    <div role="main" class="ui-content">
+				        <h3 class="ui-title">Your order was cancelled by the dispatcher.</h3>
+				    	<p>Sorry for the inconvenience.</p>
+				        <a href="#" onclick="window.history.back();" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OKAY</a>
+				    </div>
+				</div>
+				
+				</br >
+				
+				<hr />
+				<div id="orderSummary">
+				<table>
+					<tr><th colspan="2"><h2>Order Summary</h2></th></tr>
+					<tr><td><strong>Name:</strong></td><td id="orderName"></td></tr>
+					<tr><td><strong>Phone:</strong></td><td id="orderPhone"></td></tr>
+					<tr><td><strong>Pickup:</strong></td><td id="orderPickup"></td></tr>
+					<tr><td><strong>Destination:</strong></td><td id="orderDestination"></td></tr>
+					<tr><td><strong>Passengers:</strong></td><td id="orderPassengers"></td></tr>
+					<tr><td><strong>Special<br />Instructions:</strong></td><td id="orderInfo"></td></tr>
+				</table>
+				</div>
 
 		</div>
 
 		<div data-role="footer" data-type="footer">
-
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
-
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
 
 	</div>
-
-
-	<script>		
-
+	
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOj5eDVmWaVNJzoGkfKroh0TMk7Q-Mt0w&libraries=places&callback=initAutocomplete" async defer></script>
 		
-
-		function initAutocomplete() {
-
-		 // Create the autocomplete object, restricting the search to geographical
-
-		 // location types.
-
-		 autocomplete = new google.maps.places.Autocomplete(
-
-		 /** @type {!HTMLInputElement} */(document.getElementById('pickup')),
-
-		 {types: ['geocode']});
-
-		
-
-		 // When the user selects an address from the dropdown, populate the address
-
-		 // fields in the form.
-
-		 autocomplete.addListener('place_changed', fillInAddress);
-
-		 }
-
-		
-
-		 function fillInAddress() {
-
-		 // Get the place details from the autocomplete object.
-
-		 var place = autocomplete.getPlace();
-
-		
-
-		 }
-
-	</script>
-
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVzTnX1B1vuuP9n6CYPXvxporMgoDCl-Q&libraries=places&callback=initAutocomplete" async defer=></script>
-
 </body>
 
 </html>
