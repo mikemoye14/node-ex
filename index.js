@@ -92,13 +92,12 @@ socket.sockets.on('connection', function (socket) {
 	console.log('Connection established from Dispatch: ' + id);
 		
 		
-	orders = order.find({status: 'Waiting', status: 'Dispatched'}, function(err, orders) {
-			  if (err) throw err;
-
-			  // object of all the orders
-				console.log('sending orders to dispatch: ' + orders);
+	var orders = order.find({status: 'Waiting', status: 'Dispatched'}, function(err, orders) {
+			  if (err) {throw err;}
+	});
+		
+		console.log('sending orders to dispatch: ' + orders);
 				dispatch.emit('start', orders);
-			});
 			
 	//orders = order.find({}, function(err, orders) {
 	//		  if (err) throw err;
@@ -108,8 +107,8 @@ socket.sockets.on('connection', function (socket) {
 	//			dispatch.emit('start', orders);
 	//		});
 	
-  //console.log(data);
-});
+  	//console.log(data);
+	});
 
         socket.on('order', function (data) {
 		
