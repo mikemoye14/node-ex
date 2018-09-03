@@ -92,12 +92,14 @@ socket.sockets.on('connection', function (socket) {
 	console.log('Connection established from Dispatch: ' + id);
 		
 		
-	var orders = order.find({status: 'Waiting', status: 'Dispatched'}, function(err, orders) {
+	order.find({status: 'Waiting', status: 'Dispatched'}, function(err, orders) {
 			  if (err) {throw err;}
-	});
 		
 		console.log('sending orders to dispatch: ' + orders);
 				dispatch.emit('start', orders);
+	});
+		
+		
 			
 	//orders = order.find({}, function(err, orders) {
 	//		  if (err) throw err;
