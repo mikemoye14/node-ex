@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html>
 <head>
 
 	<meta charset="utf-8">
@@ -15,7 +15,14 @@
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 	
+	<link rel="stylesheet" href="./offline/offline-theme-chrome.css">
+	<link rel="stylesheet" href="./offline/offline-language-english.min.css">
+	<script src="./offline/offline.min.js"></script>
+	
 	<style>
+		.pac-container {
+			z-index: 10000 !important
+		}
 
 		[data-role=page]{height: 100% !important; position:relative !important;}
 
@@ -24,8 +31,42 @@
 	</style>
 	
 	<script>
+	$(document).on({
+    'DOMNodeInserted': function() {
+        $('.pac-item, .pac-item span', this).addClass('needsclick');
+    }
+}, '.pac-container');
 	
-	const VER = 'v1.4.2';	
+	Offline.options = {
+	
+	checks: {
+                image: {
+                    url: function() {
+                        return 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?_=' + (Math.floor(Math.random() * 1000000000));
+                    }
+                },
+                active: 'image'
+            },
+	
+	  // to check the connection status immediatly on page load.
+	  checkOnLoad: true,
+
+	  // to monitor AJAX requests to check connection.
+	  interceptRequests: false,
+
+	  // to automatically retest periodically when the connection is down (set to false to disable).
+	  reconnect: {
+		// delay time in seconds to wait before rechecking.
+		initialDelay: 3,
+
+		// wait time in seconds between retries.
+		delay: 9
+	  },
+
+	  // to store and attempt to remake requests which failed while the connection was down.
+	  requests: false,
+	  game: true 
+	};
 	
 	//alert(navigator.geolocation.getCurrentPosition(alert(''),alert('')));
 	
@@ -51,7 +92,7 @@
 			
 			<img style="border-radius: 10px; border: 3px solid black;" src="https://cdn.shopify.com/s/files/1/1490/7900/t/3/assets/WhiteRoseTaxiLogo.png" />
 			
-			<strong><p>Pa PUC No. 6317318</p></strong>
+			<p><strong>Pa PUC No. 6317318</strong></p>
 			
 			</div>
 			
@@ -79,7 +120,7 @@
 						<li>$1.00 for night time differential.</li>
 
 						<li>We now take credit cards its a $10.00 minimum</li>
-					<ul>
+					</ul>
 					<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OKAY</a>
 				</div>
 			</div>
@@ -120,7 +161,7 @@
 		
 			<div id="map"></div>
 
-			<form class="ui-field-contain" name="taxiOrderForm" id="taxiOrderForm">
+			<form autocomplete="off" class="ui-field-contain" name="taxiOrderForm" id="taxiOrderForm">
 				<div>
 					<label for="name"><strong>Name:</strong></label>
 					<span id="invalidName" style="color: red; display: none; font-size: 10pt;">Name must be filled out.</span>					
@@ -132,11 +173,11 @@
 					
 					<label for="pickup"><strong>Pickup:</strong></label>
 					<span id="invalidPickup" style="color: red; display: none; font-size: 10pt;">Please enter a valid pickup location.</span>
-					<input type="search" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" />
+					<input type="text" class="autocomplete" name="pickup" id="pickup" value="" placeholder="Required" required="" />
 					
 					<label for="destination"><strong>Destination:</strong></label>
 					<span id="invalidDestination" style="color: red; display: none; font-size: 10pt;">Please enter a valid destination.</span>
-					<input type="search" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" />
+					<input type="text" class="autocomplete" name="destination" id="destination" value="" placeholder="Required" required="" />
 			
 					<label for="passengers"><strong>Number of Passengers?</strong></label>
 					<input type="range" name="passengers" id="passengers" value="1" min="1" max="8" data-theme="b" />	
@@ -154,7 +195,36 @@
 				</div>
 			</form>
 
+			<div id="confirmOrderPopup" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
+					
+				<table>
+					<tr><th colspan="2"><h2>Confirm Order</h2></th></tr>
+					<tr><td><strong>Name:</strong></td><td id="confirmOrderName"></td></tr>
+					<tr><td><strong>Phone:</strong></td><td id="confirmOrderPhone"></td></tr>
+					<tr><td><strong>Pickup:</strong></td><td id="confirmOrderPickup"></td></tr>
+					<tr><td><strong>Destination:</strong></td><td id="confirmOrderDestination"></td></tr>
+					<tr><td><strong>Passengers:</strong></td><td id="confirmOrderPassengers"></td></tr>
+					<tr><td><strong>Special<br />Instructions:</strong></td><td id="confirmOrderInfo"></td></tr>
+				</table>
+
+				<br />
+
+				<a href="#" style="text-decoration: none;"><button style="background-color: green; color: white;" id="confirmOrder"><strong>Correct</strong></button></a>
+				<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Go Back</strong></button></a>
+
+			</div>
 			
+			<div data-role="popup" id="noInternet" data-overlay-theme="b" data-theme="b" data-dismissible="false" class="ui-btn-right" style="max-width:400px; text-align: center;">
+			    <div style="background-color: grey; margin-top: 0px; color: white;" data-role="header" data-theme="a">
+			    <h1>No Internet</h1>
+			    </div>
+			
+			    <div role="main" class="ui-content">
+			        <h3 class="ui-title">You are not connected to the internet.</h3>
+			    	<p>Please reconnect to send an order.</p>
+			        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OKAY</a>
+			    </div>
+			</div>
 
 		</div>
 
@@ -169,98 +239,49 @@
 	</div>
 
 	<script type="text/javascript">
-	/*
-	function initAutocomplete() {
+	
+	function initAutoComplete(){
+			
+	// Create the autocomplete object, restricting the search to geographical
+		
+		var data = {
+			bounds: {
+				west: -80.0505411,	//Pittsburgh
+				east: -75.2581196,	//Philadelphia
+				south: 39.2846225,	//Baltimore
+				north: 41.4045083	//Scranton
+			}
+		};
+		
+		var bounds = new google.maps.LatLngBounds(
+		new google.maps.LatLng(data.bounds.south, data.bounds.west), 
+		new google.maps.LatLng(data.bounds.north, data.bounds.east));		
+		
+		 // location types.
+		
+		 var input = document.getElementsByClassName('autocomplete');
+   
+		for (i = 0; i < input.length; i++) {
+				autocomplete = new google.maps.places.Autocomplete(
+					input[i], 
+					{ 
+						bounds: bounds,
+						region: 'US',
+						strictBounds: true});
+				 autocomplete.setComponentRestrictions({'country': ['us']});
+		}
 
-	 // Create the autocomplete object, restricting the search to geographical
+		 // When the user selects an address from the dropdown, populate the address
 
-	 // location types.
-
-	autocomplete = new google.maps.places.Autocomplete(
-	*/
-	/** @type {!HTMLInputElement} *//*(document.getElementById('pickup')),
-
-	 {types: ['geocode']});
-
-	 // When the user selects an address from the dropdown, populate the address
-
-	 // fields in the form.
-
-	autocomplete.addListener('place_changed', fillInAddress);
-
-	 }
+		 // fields in the form.
+		var place = autocomplete.getPlace();
+		
+		autocomplete.addListener('place_changed', place);
 	 
-	 function fillInAddress() {
-
-	 // Get the place details from the autocomplete object.
-
-	 var place = autocomplete.getPlace();
-
 	 }
-	*/
 	
-	var placeSearch, autocomplete;
-      var componentForm = {
-        street_number: 'short_name',
-        route: 'long_name',
-        locality: 'long_name',
-        administrative_area_level_1: 'short_name',
-        country: 'short_name',
-        postal_code: 'short_name'
-      };
+	var VER = 'v1.4.2';
 
-      function initAutocomplete() {
-        // Create the autocomplete object, restricting the search to geographical
-        // location types.
-        autocomplete = new google.maps.places.Autocomplete(
-            /** @type {!HTMLInputElement} */(document.getElementById('pickup')),
-            {types: ['geocode']});
-
-        // When the user selects an address from the dropdown, populate the address
-        // fields in the form.
-        autocomplete.addListener('place_changed', fillInAddress);
-      }
-
-      function fillInAddress() {
-        // Get the place details from the autocomplete object.
-        var place = autocomplete.getPlace();
-
-        for (var component in componentForm) {
-          document.getElementById(component).value = '';
-          document.getElementById(component).disabled = false;
-        }
-
-        // Get each component of the address from the place details
-        // and fill the corresponding field on the form.
-        for (var i = 0; i < place.address_components.length; i++) {
-          var addressType = place.address_components[i].types[0];
-          if (componentForm[addressType]) {
-            var val = place.address_components[i][componentForm[addressType]];
-            document.getElementById(addressType).value = val;
-          }
-        }
-      }
-
-      // Bias the autocomplete object to the user's geographical location,
-      // as supplied by the browser's 'navigator.geolocation' object.
-      function geolocate() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var geolocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            var circle = new google.maps.Circle({
-              center: geolocation,
-              radius: position.coords.accuracy
-            });
-            autocomplete.setBounds(circle.getBounds());
-          });
-        }
-      }
-$(document).ready(function(){
-
-	
 	$('.version').html( VER);
 	
 	function validateForm() {
@@ -325,6 +346,9 @@ $(document).ready(function(){
 		var addr = document.getElementById("pickup");
 		var addr2 = document.getElementById("destination");
 		
+		var addr1Status = false;
+		var addr2Status = false;
+		
 		var data = {
 			bounds: {
 				west: -80.0505411,	//Pittsburgh
@@ -333,6 +357,15 @@ $(document).ready(function(){
 				north: 41.4045083	//Scranton
 			}
 		};
+		
+		var areaCoords = [
+          {lat: 40.4310319, lng: -80.0505411},
+          {lat: 40.0011547, lng: -75.2581196},
+          {lat: 39.2843723, lng: -76.8999961},
+		  {lat: 41.404445, lng: -75.8016774}
+        ];
+		
+		var area = new google.maps.Polygon({paths: areaCoords});
 		
 		var bounds = new google.maps.LatLngBounds(
 		new google.maps.LatLng(data.bounds.south, data.bounds.west), 
@@ -349,53 +382,78 @@ $(document).ready(function(){
 							country: 'US'
 						}}, function(results, status){
 			
-			alert('status: ' + status + '\n\n pickup results: \n\n' + results);
+            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {				
 			
-            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-				$('#pickup').css('border', 'green solid 3px');		
-				$('#invalidPickup').hide();
-                // set it to the correct, formatted address if it's valid
-                alert(addr.value = results[0].formatted_address);
+				if(google.maps.geometry.poly.containsLocation(results[0].geometry.location, area)){				
+				
+					$('#pickup').css('border', 'green solid 3px');		
+					$('#invalidPickup').hide();
+					// set it to the correct, formatted address if it's valid
+					addr.value = results[0].formatted_address;
+					var addr1Status = true;
+				
+			}else{
+				$('#pickup').css('border', 'red solid 3px');
+				$('#invalidPickup').html('Invalid address or address is outside of the service area.');
+				//addr.value = results[0].formatted_address;
+				$('#invalidPickup').show();
+				//event.preventDefault();
+				return false;
+			}
 
-        // show an error if it's not
+			// show an error if it's not
             }else{
 			
-			$('#pickup').css('border', 'red solid 3px');			
-			$('#invalidPickup').show();
-			event.preventDefault();
-			return false;
-			
+				$('#pickup').css('border', 'red solid 3px');			
+				$('#invalidPickup').show();
+				//event.preventDefault();
+				return false;			
 			}
 			
-        });	
+        });
+		
+		if(addr1Status){}else{return false}
 
 		// Geocode the address
         geocoder.geocode({
-						'address': addr.value,		
+						'address': addr2.value,		
 						bounds: bounds,
 						componentRestrictions: {
 							country: 'US'
 						}}, function(results, status){
             if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+			
+			if(google.maps.geometry.poly.containsLocation(results[0].geometry.location, area)){
 				$('#destination').css('border', 'green solid 3px');		
 				$('#invalidDestination').hide();
                 // set it to the correct, formatted address if it's valid
                 addr2.value = results[0].formatted_address;
+				var addr2Status = true;
+			}else{
+			
+				$('#destination').css('border', 'red solid 3px');			
+				$('#invalidDestination').show();
+				$('#invalidDestination').html('Invalid address or address is outside of the service area.');
+				//addr2.value = results[0].formatted_address;
+				//event.preventDefault();
+				return false;
+			
+			}
 
         // show an error if it's not
             }else{
 			
-			$('#destination').css('border', 'red solid 3px');			
-			$('#invalidDestination').show();
-			//event.preventDefault();
-			return false;
+				$('#destination').css('border', 'red solid 3px');			
+				$('#invalidDestination').show();
+				//event.preventDefault();
+				return false;
 			
 			}
-        });	
-
-
-			return true;		
+        });
 		
+		if(addr2Status){}else{return false}
+		
+			return true;	
 	}
 		
 		
@@ -458,7 +516,7 @@ $(document).ready(function(){
 	socket.on('waitTime',function(data){
 
 		console.log(data);				
-		$('.statusFooter').text(data);
+		$('.statusFooter').text('Wait Time: ' + data.waitTime);
 		
 		if(orderId == data.id){
 
@@ -490,7 +548,7 @@ $(document).ready(function(){
 			
 			try{
 				WebInterface.notification('Taxi Order Cancelled', 'Your taxi order was cancelled by the dispatcher.');
-			}catch{}
+			}catch(e){}
 			
 			$('#dispatcherCancel').popup("open");
 			
@@ -515,7 +573,7 @@ $(document).ready(function(){
 			
 			try{
 				WebInterface.notification('Taxi Status', 'Your taxi has arrived!');
-			}catch{}
+			}catch(e){}
 		}
 	
 	});
@@ -551,17 +609,32 @@ $(document).ready(function(){
 	  minutes = minutes < 10 ? '0'+minutes : minutes;
 	  var strTime = hours + ':' + minutes + ' ' + ampm;
 	  return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
-	}			
-
-	$('#send').click(function() {
-
-	if(navigator.onLine){
-	}else{ alert('offline');
-		//document.getElementsByTagName("html")[0].innerHTML('<body><h3>NO Internet. Please check your internet connection.</h3></body>');
 	}
+
+	$('#send').click(function(){
+		if(navigator.onLine){
+			if(validateForm()){
+		
+				setTimeout(function(){
+					$('#confirmOrderName').html($('#name').val());
+					$('#confirmOrderPhone').html($('#phone').val());
+					$('#confirmOrderPickup').html($('#pickup').val());
+					$('#confirmOrderDestination').html($('#destination').val());
+					$('#confirmOrderInfo').html($('#info').val());
+					$('#confirmOrderPassengers').html($('#passengers').val());
+			
+				$("#confirmOrderPopup").popup("open");
+				}, 500);
+			}
+	}else{ 
 	
+		$('#noInternet').popup("open");
 	
-		if(validateForm()){
+	}
+		
+	});
+
+	$('#confirmOrder').click(function() {	
 		
 			$('#orderTime').val(formatDate(new Date()));
 		
@@ -576,7 +649,6 @@ $(document).ready(function(){
 			$('#orderPassengers').html($('#passengers').val());
 			
 			window.location = '#waitPage';
-		}
 
 		$('.statusFooter').text('Order Sent');	
 
@@ -608,7 +680,7 @@ $(document).ready(function(){
 				clearInterval(timer);
 				try{
 				WebInterface.notification('Taxi Status', 'Your Taxi is arriving soon.'); //send mobile app notification when wait time expires
-				}catch{}
+				}catch(e){}
 				$('#time').html('<h2>Your taxi is arriving soon!<h2>');				
 			 } 
 		
@@ -622,7 +694,9 @@ $(document).ready(function(){
 
 		startTimer((mins * 60), display);
 
-	};		
+		$('#expectedTime').html(new Date(new Date().getTime() + mins*60000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));	
+
+	};
 
 	//send order cancel request
 	$('#cancelConfirmButton').click(function(){			
@@ -658,7 +732,6 @@ $(document).ready(function(){
 		$("#fareEstimatePopup").popup("open");
 	});
 		
-});	
 
 function cancelOrderWithAndroidBackButton(){
 
@@ -695,16 +768,16 @@ function cancelOrderWithAndroidBackButton(){
 				<h2>ETA:</h2>
 
 				<h2 id="timer"></h2>
+				
+				<p>Your taxi is expected to arrive at <strong id="expectedTime"></strong></p>
 
 			</div>			
-				<br />
-				<a href="#cancelConfirm" style="text-decoration: none;" data-rel="popup" data-position-to="window"><button style="background-color: red; color: white;" id="cancelOrder">CANCEL</button></a>
-				
+				<br />				
 				<!-- Popups for lightbox images -->
 
 				<div id="cancelConfirm" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
 
-					<label><h2>Are you sure you want to cancel?</h2></label>
+					<h2>Are you sure you want to cancel?</h2>
 
 					<br />
 
@@ -725,20 +798,25 @@ function cancelOrderWithAndroidBackButton(){
 				    </div>
 				</div>
 				
-				</br >
+				<br />
 				
 				<hr />
 				<div id="orderSummary">
-				<table>
-					<tr><th colspan="2"><h2>Order Summary</h2></th></tr>
-					<tr><td><strong>Name:</strong></td><td id="orderName"></td></tr>
-					<tr><td><strong>Phone:</strong></td><td id="orderPhone"></td></tr>
-					<tr><td><strong>Pickup:</strong></td><td id="orderPickup"></td></tr>
-					<tr><td><strong>Destination:</strong></td><td id="orderDestination"></td></tr>
-					<tr><td><strong>Passengers:</strong></td><td id="orderPassengers"></td></tr>
-					<tr><td><strong>Special<br />Instructions:</strong></td><td id="orderInfo"></td></tr>
-				</table>
+					<table>
+						<tr><th colspan="2"><h2>Order Summary</h2></th></tr>
+						<tr><td><strong>Name:</strong></td><td id="orderName"></td></tr>
+						<tr><td><strong>Phone:</strong></td><td id="orderPhone"></td></tr>
+						<tr><td><strong>Pickup:</strong></td><td id="orderPickup"></td></tr>
+						<tr><td><strong>Destination:</strong></td><td id="orderDestination"></td></tr>
+						<tr><td><strong>Passengers:</strong></td><td id="orderPassengers"></td></tr>
+						<tr><td><strong>Special<br />Instructions:</strong></td><td id="orderInfo"></td></tr>
+					</table>
 				</div>
+				<br />
+				<hr />
+				<br />
+				<a href="#cancelConfirm" style="text-decoration: none;" data-rel="popup" data-position-to="window"><button style="background-color: red; color: white;" id="cancelOrder">CANCEL</button></a>
+				
 
 		</div>
 
@@ -751,9 +829,8 @@ function cancelOrderWithAndroidBackButton(){
 		</div>
 
 	</div>
+	<!-- <script src="https://maps.googleapis.com/maps/api/geocode/json?address=York&key=AIzaSyAOj5eDVmWaVNJzoGkfKroh0TMk7Q-Mt0w"></script> //-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOj5eDVmWaVNJzoGkfKroh0TMk7Q-Mt0w&region=us&libraries=places&callback=initAutoComplete" async defer></script>
 	
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOj5eDVmWaVNJzoGkfKroh0TMk7Q-Mt0w&libraries=places&callback=initAutocomplete" async defer></script>
-		
 </body>
-
 </html>
