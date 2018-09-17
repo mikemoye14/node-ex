@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +10,11 @@
 	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>	
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 	<script type="text/javascript" src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	
+	<link rel="stylesheet" href="./offline/offline-theme-chrome.css">
+	<link rel="stylesheet" href="./offline/offline-language-english.min.css">
+	<script src="./offline/offline.min.js"></script>
+	
 	<style>
 		[data-role=page]{height: 100% !important; position:relative !important;}
 		[data-role=footer]{bottom:0; position:fixed !important; top: auto !important; width:100%;}
@@ -16,134 +22,235 @@
 	
 	<script>
 	
-	var orderId = '', socket, dispatch;
+	Offline.options = {
+	
+	checks: {
+                image: {
+                    url: function() {
+                        return 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?_=' + (Math.floor(Math.random() * 1000000000));
+                    }
+                },
+                active: 'image'
+            },
+	
+	  // to check the connection status immediatly on page load.
+	  checkOnLoad: true,
+
+	  // to monitor AJAX requests to check connection.
+	  interceptRequests: false,
+
+	  // to automatically retest periodically when the connection is down (set to false to disable).
+	  reconnect: {
+		// delay time in seconds to wait before rechecking.
+		initialDelay: 3,
+
+		// wait time in seconds between retries.
+		delay: 9
+	  },
+
+	  // to store and attempt to remake requests which failed while the connection was down.
+	  requests: false,
+	  game: true 
+	};
+	
+	const VER = 'v1.4.2';
+	
+$(document).ready(function(){
+	
+	$( "#jobsTab" ).click();});
+	
+	$('.version').html(VER);
+	
+	var dispatchID, orderId, socket, dispatch;
+	
 	dispatch = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com/dispatch');
 	socket = io.connect('http://taxi-taximobile.7e14.starter-us-west-2.openshiftapps.com');
-	
+
 	function uid() {
-		  // Math.random should be unique because of its seeding algorithm.
-		  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-		  // after the decimal.
-		  return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
-		}
-		
-		function QueryStringToJSON(data) {            
-			var pairs = data.split('&');
-			
-			var result = {};
-			pairs.forEach(function(pair) {
-				pair = pair.split('=');
-				result[pair[0]] = decodeURIComponent(pair[1] || '');
-			});
+		// Math.random should be unique because of its seeding algorithm.
+		// Convert it to base 36 (numbers + letters), and grab the first 9 characters
+		// after the decimal.
+		return new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
+	}
+	
+	function setOrderId(id) {
+		orderId = id;
+	}
 
-			return JSON.parse(JSON.stringify(result));
-		}
-		
-		
-		
-		function setOrderId(id){		
-			orderId = id;		
-		}	
-			
-			dispatch.emit('init', 'New Dispatcher Connected');											
-			dispatch.on('init',function(data){				
-				console.log(data);
-				$('#statusFooter').html('Connection Established!');				
-			});
-			
-			dispatch.on('cancel',function(data) {
-					console.log('Cancel Request Received from: ' + '#' + data);					
-					
-					if($('#' + data).length){
-						//console.log('Cancel Request Received');
-						$('#' + data + ' .status').html('Cancelled').css('background-color', 'red').css('color', 'white');
-						//setUid();
-					}				
-				});
-			
-			dispatch.on('order',function(data){
-				console.log(data);
-				$('#statusFooter').html(data);
-				
-				WebPayInterface.notification('New Order', 'New Order Received'); //send mobile app notification when order is received
-				
-				if($('#noOrders').length == 1){
-					$('#noOrders').remove();
-				}
-				
-				var order = QueryStringToJSON(data);
-				
-				var pickup = order.pickup, destination = order.destination;
-				
-				for(i=0; i < order.pickup.length; i++) {
- 
-					pickup = pickup.replace('+', ' ');
-					 
-				}
-				
-				for(i=0; i < order.destination.length; i++) {
- 
-					destination = destination.replace('+', ' ');
-					 
-				}
-				
-				$('#orders').append(
-					'<tr id="' + order.uid + '">' + 
-					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + ($('#orders tr').length + 1) + '</div></a></td>' +
-					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.name + '</div></a></td>' +
-					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.phone + '</div></a></td>' +
-					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + pickup + '</div></a></td>' +
-					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + destination + '</div></a></td>' +
-					'<td style="padding: 0px;"><a onclick="setOrderId(\'' + order.uid + '\')" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%; background-color: yellow;" class="status">Waiting</td>' +
-					'</tr>'
-				);
-				
-			});
-			
-			dispatch.on("disconnected", function () {
-				console.log('Disconnected from Taxi Dispatch');
-				$('#statusFooter').html('Disconnected from Taxi Dispatch');
-				//alert('Disconnected from Taxi Dispatch');
-		
-		//}catch (error){			
-				//console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);	
-				//$('#statusFooter').html('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
-		//}
+	function QueryStringToJSON(data) {
+		var pairs = data.split('&');
+		var result = {};
+		pairs.forEach(function(pair) {
+			pair = pair.split('=');
+			result[pair[0]] = decodeURIComponent(pair[1] || '');
 		});
+		return JSON.parse(JSON.stringify(result));
+	}
 	
-		function sendWaitTime(){
+	dispatchID = uid(); 
+	//alert(dispatchID);
+	socket.emit('initDispatch', dispatchID);
+	//dispatch.emit('start', 'New Dispatcher Connected');
 	
-			socket.emit('waitTime', {'waitTime' : $('#waitTime').val(), 'id': orderId});
-			console.log('Wait time sent to OrderId: ' + orderId);
-			$('#statusFooter').html('Wait time sent.');
+	dispatch.on('start', function(orders) {
+		//alert('dispatchId: ' + data.id);
+		//if (dispatchId == data.id) {
+			console.log(orders.length + ' orders received.');
+			$('.statusFooter').text('Connection Established! - ' + orders.length + ' orders received.');
 			
-			if($('#' + orderId).length){
-				$('#' + orderId + ' .status').html('Dispatched').css('background-color', 'green').css('color', 'white');						
-			}	
+			if (orders.length > 0) {
+				$('#noOrders').remove();
+			}
+			
+			$.each(orders, function(k, order){	
+			
+			var pickup = order.pickup, destination = order.destination, time = order.orderTime;
+		
+		for(i=0; i < order.orderTime.length; i++) {
+				time = time.replace('+', ' ');
+			}
+			for(i=0; i < order.pickup.length; i++) {
+				pickup = pickup.replace('+', ' ');
+			}
+			for(i=0; i < order.destination.length; i++) {
+				destination = destination.replace('+', ' ');
+			}
+			
+			var backColor = 'yellow', fontColor = 'black';
+			
+			if(order.status == 'Dispatched'){
+				backColor = 'blue';
+				fontColor = 'white';
+			}
+			
+			$('#orders').append('<tr id="' + order.orderId + '">' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + ($('#orders tr').length + 1) + '</div></a></td>' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + new Date(time).toLocaleDateString() + '<br />' + new Date(time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + '</div></a></td>' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.name + '</div></a></td>' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.phone + '</div></a></td>' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + pickup + '</div></a></td>' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + destination + '</div></a></td>' + 
+									'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: ' + fontColor + ';" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%; background-color: ' + backColor + ';" class="status">' + order.status + '</td>' + '</tr>');
+		});
+	});
+	
+	dispatch.on('cancel', function(id) {
+		console.log('Cancel Request Received from: ' + '#' + id);
+		$('.statusFooter').text('Cancel Request Received from: ' + '#' + id);
+		if ($('#' + id).length) {
+			$('#' + id + ' a').css('color', 'gray').css('cursor', 'default').css('cursor', 'default').attr('onclick', 'event.preventDefault();');
+			$('#' + id + ' .status').html('Cancelled').css('background-color', 'red').css('color', 'white');
+			//setUid();
+		}
+	});
+	
+	dispatch.on('order', function(order) {
+		console.log(order);
+		$('.statusFooter').text(order);
+		try {
+			WebInterface.notification('New Order', 'New Order Received'); //send mobile app notification when order is received
+		} catch { console.log('Notification NOT Sent');}
+		if ($('#noOrders').length > 0) {
+			$('#noOrders').remove();
+		}
+		//var order = QueryStringToJSON(data);
+		var pickup = order.pickup, destination = order.destination, time = order.orderTime;
+		
+		for(i=0; i < order.orderTime.length; i++) {
+				time = time.replace('+', ' ');
+			}		
+		for(i=0; i < order.pickup.length; i++) {
+			pickup = pickup.replace('+', ' ');
+		}
+		for(i=0; i < order.destination.length; i++) {
+			destination = destination.replace('+', ' ');
+		}
+		$('#orders').append('<tr id="' + order.orderId + '">' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + ($('#orders tr').length + 1) + '</div></a></td>' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + new Date(time).toLocaleDateString() + '<br />' + new Date(time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + '</div></a></td>' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.name + '</div></a></td>' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + order.phone + '</div></a></td>' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + pickup + '</div></a></td>' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%;">' + destination + '</div></a></td>' + 
+								'<td style="padding: 5px; vertical-align: middle;"><a onclick="setOrderId(\'' + order.orderId + '\'); checkOnline();" style="text-decoration: none; color: black;" href="#popupMenu" data-rel="popup" data-position-to="window"><div style="text-align: center; height: 100%; width: 100%; background-color: yellow;" class="status">Waiting</td>' + 
+							'</tr>');
+	});
+	
+	function checkOnline(){
+		if(navigator.onLine){
+			$('#popupMenu').popup("open");
+		}else{ 
+	
+		$('#noInternet').popup("open");
 	
 		}
+	}
+	
+	dispatch.on("disconnected", function() {
+		console.log('Disconnected from Taxi Dispatch');
+		$('.statusFooter').text('Disconnected from Taxi Dispatch');
+		//alert('Disconnected from Taxi Dispatch');
+		//}catch (error){			
+		//console.log('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);	
+		//$('.statusFooter').text('Cannot connect to Taxi Dispatch Server\n\n Error: ' + error);				
+		//}
+	});
 
-		function sendArrivalNotification(){
+	function sendWaitTime() {
+		socket.emit('waitTime', {
+			'waitTime': $('#waitTime').val(),
+			'id': orderId
+		});
+		console.log('Wait time sent to OrderId: ' + orderId);
+		$('.statusFooter').text('Wait time sent.');
+		if ($('#' + orderId).length) {
+			$('#' + orderId + ' .status').html('Dispatched').css('background-color', 'blue').css('color', 'white');
+		}
+	}
+
+	function sendArrivalNotification() {
+		console.log('sending arrival');
+		$('.statusFooter').text('sending arrival');
+		//alert('sending arrival');
+		socket.emit('arrivalNotification', orderId);
+		if ($('#' + orderId).length) {
+			$('#' + orderId + ' a').css('color', 'gray').css('cursor', 'default').css('cursor', 'default').attr('onclick', 'event.preventDefault();');
+			$('#' + orderId + ' .status').html('Complete').css('background-color', 'green').css('color', 'white');
+		}
+		$('#popupMenu').popup("close");
+	}
+
+	function openWaitTime() {
+		//alert('gotHere');
+		$('#popupMenu').popup("close");
+		setTimeout(function() {
+			$("#waitTimeDiv").popup("open");
+		}, 100);
+	}
+
+	function cancelOrder() {
+		
+		$('#popupMenu').popup("close");
+		setTimeout(function() {
+			$("#cancelConfirm").popup("open");
+		}, 100);
+	}
+	
+	function confirmCancel(){
+	
+		if ($('#' + orderId).length) {
+		
+			$('#' + orderId + ' .status').html('Cancelled').css('background-color', 'red').css('color', 'white');
+			$('#' + orderId + ' a').css('color', 'gray').css('cursor', 'default').attr('onclick', 'event.preventDefault();');
 			
-			socket.emit('arrivalNotification', orderId);
-		
 		}
-		
-		function openWaitTime(){
-			//alert('gotHere');
-			$('#popupMenu').popup("close");
-			setTimeout(function () {
-				$("#waitTimeDiv").popup("open")
-			}, 100);	
-		}
-		
-		function cancelOrder(){
-			//alert('gotHere');
-			$('#popupMenu').popup("close");
-			setTimeout(function () {
-				$("#cancelConfirm").popup("open")
-			}, 100);	
-		}
+	
+		socket.emit('dispatchCancel', orderId);
+
+		console.log('Cancel Request Sent');
+
+		$('.statusFooter').text('Cancel Request Sent.');	
+	}
 	
 	</script>
 	
@@ -158,7 +265,7 @@
 			<div data-role="navbar">
 				<ul>
 					<li><a class="ui-btn-active ui-state-persist" href="#home">Home</a></li>
-					<li><a href="#jobs">Jobs</a></li>
+					<li><a id="jobsTab" href="#jobs">Jobs</a></li>
 					<li><a href="#dispatch">Dispatch</a></li>					
 					<li><a href="#vehicles">Vehicles</a></li>
 				</ul>
@@ -171,9 +278,13 @@
 			</div>
 		</div>	
 		<div data-role="footer" data-type="footer">
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
+		
 	</div>
 	
 	<!-- jobs //-->
@@ -196,11 +307,14 @@
 			<div style="text-align: center;">
 				<h1>Jobs</h1>
 
-				<table data-role="table" id="jobsTable" data-column-btn-text="Filter" data-column-btn-theme="a" class="ui-body-d ui-shadow table-stripe ui-responsive"> <!-- data-mode="columntoggle" //--> 
+				<table data-role="table" id="jobsTable" data-column-btn-text="Filter" data-mode="reflow" data-column-btn-theme="a" class="ui-body-d ui-shadow table-stripe ui-responsive"> <!-- data-mode="columntoggle" //--> 
 				  <thead>
 					<tr>
-					<th style="text-align: center;" class="label" data-priority="6">
+					<th style="text-align: center;" class="label" data-priority="7">
 						#
+					  </th>
+					  <th style="text-align: center;" class="label" data-priority="6">
+						Date/Time
 					  </th>
 					  <th style="text-align: center;" class="label" data-priority="5">
 						Name
@@ -221,7 +335,7 @@
 				  </thead>
 				  <tbody id="orders">
 					<tr id="noOrders">
-						<td colspan="6" style="text-align: center;">There are currently no jobs available</td>
+						<td colspan="7" style="text-align: center;">There are currently no jobs available</td>
 					</tr>
 				  </tbody>
 				</table>
@@ -229,37 +343,51 @@
 				<!-- Popups for Wait time -->
 				<div id="waitTimeDiv" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
 					<label for="waitTime"><h2>Wait time in minutes?</h2></label>
-					<input type="range" name="waitTime" id="waitTime" value="30" min="0" max="120" data-theme="b" />
+					<input type="range" name="waitTime" id="waitTime" value="30" min="1" max="120" data-theme="b" />
 					<br />
 					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" onclick="sendWaitTime();" ><strong>Accept</strong></button></a>
 					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
 				</div>
 				
 				<!-- menu options //-->
-				<div data-role="popup" id="popupMenu" data-theme="b">
-				        <ul data-role="listview" data-inset="true" style="min-width:210px;">
-				            <li data-role="list-divider">Choose an action</li>
-				            <li><a href="#" onclick="openWaitTime();">Send Wait Time</a></li>
-				            <li><a href="#" onclick="sendArrivalNotification();">Send Status Update Notification</a></li>
-				            <li><a href="#">Taxi Menu Option</a></li>
-				            <li><a href style="background-color: red; color: white;" onclick="cancelOrder();">Cancel Order</a></li>
-				        </ul>
-				</div>
 				
+				<div data-role="popup" id="popupMenu" data-theme="a" style="padding: 0px;">
+			        <ul data-role="listview" data-inset="true" style="min-width:210px;">
+			            <li data-role="list-divider"><Strong><h3>Choose an Action</h3></strong></li>
+			            <li><a  onclick="openWaitTime();">Send Wait Time</a></li>
+			            <li><a style="background-color: green; color: white;" onclick="sendArrivalNotification();">Send Arrival Notification</a></li>
+			            <li><a style="background-color: red; color: white;" onclick="cancelOrder();">Cancel Order</a></li>
+			        </ul>
+				</div>
 				<!-- Cancel -->
 				<div id="cancelConfirm" data-role="popup" data-overlay-theme="a" style="padding: 20px;">
 					<label><h2>Are you sure you want to cancel?</h2></label>
 					<br />
-					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" id="cancelConfirmButton"><strong>Accept</strong></button></a>
-					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>Cancel</strong></button></a>
+					<a href="#" onclick="confirmCancel()" style="text-decoration: none;" data-rel="back"><button style="background-color: green; color: white;" id="cancelConfirmButton"><strong>YES</strong></button></a>
+					<a href="#" style="text-decoration: none;" data-rel="back"><button style="background-color: red; color: white;"><strong>NO</strong></button></a>
 				</div>
 
 			</div>
+			<div data-role="popup" id="noInternet" data-overlay-theme="b" data-theme="b" data-dismissible="false" class="ui-btn-right" style="max-width:400px; text-align: center;">
+			    <div style="background-color: grey; margin-top: 0px; color: white;" data-role="header" data-theme="a">
+			    <h1>No Internet</h1>
+			    </div>
+			
+			    <div role="main" class="ui-content">
+			        <h3 class="ui-title">You are not connected to the internet.</h3>
+			    	<p>Please reconnect to send an order.</p>
+			        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OKAY</a>
+			    </div>
+			</div>
 		</div>	
 		<div data-role="footer" data-type="footer">
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
+		
 	</div>
 	
 	<!-- dispatch //-->
@@ -284,11 +412,14 @@
 			</div>
 		</div>	
 		<div data-role="footer" data-type="footer">
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
-	</div>
-	
+		
+	</div>	
 	
 	<!-- Vehicles //-->
 	
@@ -312,8 +443,12 @@
 			</div>
 		</div>	
 		<div data-role="footer" data-type="footer">
-			<span style="padding: 2px;"> &nbsp;© 2018 White Rose Taxi</span>
-			<span id="statusFooter" style="text-align: right; font-size: 10px;"></span>
+			<div class="ui-grid-b">
+                <div class="ui-block-a" style="text-align: left; font-size: 7pt;">&nbsp;© 2018 White Rose Taxi</div>
+				<div class="ui-block-b version" style="text-align: center; font-size: 7pt;"></div>   
+                <div class="ui-block-c statusFooter" style="text-align: right; font-size: 7pt;"></div>                
+            </div>
 		</div>
+		
 	</div>
 </body>
