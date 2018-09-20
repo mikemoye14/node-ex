@@ -99,7 +99,7 @@ socket.sockets.on('connection', function (socket) {
 			console.log(order[i].			
 		}
 		
-		console.log('sending orders to dispatch: ' + orders);
+		console.log('sending orders to dispatch with ID: ' + id);
 				dispatch.emit('start', {order: orders, dispatchId: id});
 	});
 		
