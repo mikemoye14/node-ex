@@ -95,9 +95,9 @@ socket.sockets.on('connection', function (socket) {
 	order.find({$or: [{status: 'Waiting'}, {status: 'Dispatched'}]}, function(err, orders) {
 			  if (err) {throw err;}
 		
-		//for(i=0; i<orders.length;i++){
-			//console.log(order[i].			
-		//}
+		for(i=0; i<orders.length;i++){
+			console.log(orders[i].orderId + ' : ' + orders[i].ordetTime);	 		
+		}
 		
 		console.log('sending orders to dispatch with ID: ' + id);
 				dispatch.emit('start', {order: orders, dispatchId: id});
