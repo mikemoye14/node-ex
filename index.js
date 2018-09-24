@@ -115,7 +115,7 @@ socket.sockets.on('connection', function (socket) {
 		}
 		
 		console.log('sending orders to dispatch with ID: ' + id);
-				dispatch.emit('start', {order: nonExpiredOrders, dispatchId: id});
+				dispatch.emit('start', {order: orders, dispatchId: id});
 	});
 		
 		
