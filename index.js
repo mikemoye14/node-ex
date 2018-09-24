@@ -103,6 +103,12 @@ socket.sockets.on('connection', function (socket) {
 			
 			if(((new Date()) - orders[i].orderTime) < THREE_HOURS){
 				nonExpiredOrders.push(orders[i]);	
+			}else{				
+				order.updateOne({orderId: orders[i].orderId}, {$set: { status: "Expired" }}, function(err, res) {
+    					if (err) throw err;				
+				});
+				
+				socket.broadcast.emit('cancel', id);
 			}
 		}
 		
