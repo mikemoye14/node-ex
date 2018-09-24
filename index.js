@@ -95,12 +95,19 @@ socket.sockets.on('connection', function (socket) {
 	order.find({$or: [{status: 'Waiting'}, {status: 'Dispatched'}]}, function(err, orders) {
 			  if (err) {throw err;}
 		
+		var THREE_HOURS = 60 * 60 * 3000
+		var nonExpiredOrders = [];
+		
 		for(i=0; i<orders.length;i++){
-			console.log(orders[i].orderId + ' : ' + orders[i].ordetTime);	 		
+			//console.log(orders[i].orderId + ' : ' + orders[i].orderTime);	
+			
+			if(((new Date()) - orders[i].orderTime) < THREE_HOURS){
+				nonExpiredOrders.push(orders[i]);	
+			}
 		}
 		
 		console.log('sending orders to dispatch with ID: ' + id);
-				dispatch.emit('start', {order: orders, dispatchId: id});
+				dispatch.emit('start', {order: nonExpiredOrders, dispatchId: id});
 	});
 		
 		
