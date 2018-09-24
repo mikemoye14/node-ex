@@ -101,7 +101,7 @@ socket.sockets.on('connection', function (socket) {
 		for(i=0; i<orders.length;i++){
 			//console.log(orders[i].orderId + ' : ' + orders[i].orderTime);	
 			
-			if(((new Date()) - orders[i].orderTime) > THREE_HOURS){
+			if(((new Date()) - (new Date(orders[i].orderTime))) > THREE_HOURS){
 				nonExpiredOrders.push(orders[i]);	
 			}else{				
 				order.updateOne({orderId: orders[i].orderId}, {$set: { status: "Expired" }}, function(err, res) {
