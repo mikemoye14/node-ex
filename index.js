@@ -12,10 +12,6 @@ var port = process.env.PORT || 8080;
 // Routing
 app.use(express.static(path.join(__dirname, './')))
 
-app.get('/taxi', function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
-})
-
 //init socket server
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
@@ -95,24 +91,24 @@ socket.sockets.on('connection', function (socket) {
 	order.find({$or: [{status: 'Waiting'}, {status: 'Dispatched'}]}, function(err, orders) {
 			  if (err) {throw err;}
 		
-		var THREE_HOURS = 60 * 60 * 3000
-		var nonExpiredOrders = [];
+		//var THREE_HOURS = 60 * 60 * 3000
+		//var nonExpiredOrders = [];
 		
-		for(i=0; i<orders.length;i++){
+		//for(i=0; i<orders.length;i++){
 			//console.log(orders[i].orderId + ' : ' + orders[i].orderTime);
 			
-			console.log('newDate: ' + new Date() + ' - ' + 'orderDate: ' + new Date(orders[i].orderTime));
+			//console.log('newDate: ' + new Date() + ' - ' + 'orderDate: ' + new Date(orders[i].orderTime));
 			
-			if(((new Date()) - (new Date(orders[i].orderTime))) < THREE_HOURS){
-				nonExpiredOrders.push(orders[i]);	
-			}else{				
-				order.updateOne({orderId: orders[i].orderId}, {$set: { status: "Expired" }}, function(err, res) {
-    					if (err) throw err;				
-				});
+			//if(((new Date()) - (new Date(orders[i].orderTime))) < THREE_HOURS){
+				//nonExpiredOrders.push(orders[i]);	
+			//}else{				
+				//order.updateOne({orderId: orders[i].orderId}, {$set: { status: "Expired" }}, function(err, res) {
+    					//if (err) throw err;				
+				//});
 				
-				socket.broadcast.emit('cancel', id);
-			}
-		}
+				//socket.broadcast.emit('cancel', id);
+			//}
+		//}
 		
 		console.log('sending orders to dispatch with ID: ' + id);
 				dispatch.emit('start', {order: orders, dispatchId: id});
