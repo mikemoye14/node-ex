@@ -87,9 +87,18 @@ socket.sockets.on('connection', function (socket) {
 	
 	console.log('Connection established from Dispatch: ' + id);
 		
-		
-	order.find({$or: [{status: 'Waiting'}, {status: 'Dispatched'}]}, function(err, orders) {
+		order.find({$or: [{status: 'Waiting'}, {status: 'Dispatched'}]}, function(err, orders) {
 			  if (err) {throw err;}
+		
+		console.log('sending orders to dispatch: ' + orders);
+				dispatch.emit('start', orders);
+	});
+		
+	//socket.on('initDispatch', function(id){
+	
+	//console.log('Connection established from Dispatch: ' + id);	
+	//order.find({$or: [{status: 'Waiting'}, {status: 'Dispatched'}]}, function(err, orders) {
+			  //if (err) {throw err;}
 		
 		//var THREE_HOURS = 60 * 60 * 3000
 		//var nonExpiredOrders = [];
@@ -110,9 +119,9 @@ socket.sockets.on('connection', function (socket) {
 			//}
 		//}
 		
-		console.log('sending orders to dispatch with ID: ' + id);
-				dispatch.emit('start', {order: orders, dispatchId: id});
-	});
+		//console.log('sending orders to dispatch with ID: ' + id);
+			//	dispatch.emit('start', {order: orders, dispatchId: id});
+	//});
 		
 		
 			
