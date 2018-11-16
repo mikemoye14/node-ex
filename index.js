@@ -15,6 +15,9 @@ app.use(express.static(path.join(__dirname, './')))
 app.get('/taxi', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 })
+app.get('/user', function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
+})
 
 //init socket server
 server.listen(port, () => {
