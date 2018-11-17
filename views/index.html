@@ -119,6 +119,8 @@ function onSuccess(googleUser) {
             document.getElementById("gSignIn").style.display = "none";
             document.getElementsByClassName("userContent")[0].style.display = "block";
 			
+			window.history.back();
+			
 			$('.fb-login-button').hide();
 			$('#logo').hide();
 			
@@ -459,40 +461,6 @@ $('.fb-login-button').click(function(){
 		// fields in the form.
 		var place = autocomplete.getPlace();
 	}
-
-$(document).ready(function(){
-	
-	var VER = 'v1.7.0';
-	var timer;
-
-	$('.version').html( VER);
-	
-	$('input').focus(function(){
-		$(this).css('border', '0px');
-	});	
-	try{
-	if(localStorage.name == 'undefined'){
-	
-		localStorage.setItem('name', '');
-		
-	}else{
-	
-		//alert(localStorage.name);
-		$('#name').val(localStorage.name);
-	
-	}
-	
-	if(localStorage.phone == 'undefined'){
-	
-		localStorage.setItem('phone', '');
-		
-	}else{
-	
-		//alert(localStorage.phone);
-		$('#phone').val(localStorage.phone);
-	
-	}
-	}catch{}
 	
 	var currgeocoder;
 
@@ -539,6 +507,42 @@ function getCurrentAddress(location) {
         }
     });
 }
+
+$(document).ready(function(){
+	
+	var VER = 'v1.7.0';
+	var timer;
+
+	$('.version').html( VER);
+	
+	$('input').focus(function(){
+		$(this).css('border', '0px');
+	});	
+	try{
+	if(localStorage.name == 'undefined'){
+	
+		localStorage.setItem('name', '');
+		
+	}else{
+	
+		//alert(localStorage.name);
+		$('#name').val(localStorage.name);
+	
+	}
+	
+	if(localStorage.phone == 'undefined'){
+	
+		localStorage.setItem('phone', '');
+		
+	}else{
+	
+		//alert(localStorage.phone);
+		$('#phone').val(localStorage.phone);
+	
+	}
+	}catch{}
+	
+	
 	
 	//alert(localStorage.getItem('name'));
 	
